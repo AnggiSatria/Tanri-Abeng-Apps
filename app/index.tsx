@@ -21,7 +21,6 @@ export default function HomeScreen() {
       />
       <View className="h-full">
         <View className="w-full px-4 items-center my-8">
-          {/* Header */}
           <Animated.View
             entering={FadeInDown.duration(200).springify()}
             className="flex-row justify-center items-center pb-5"
@@ -34,7 +33,6 @@ export default function HomeScreen() {
               Airplane
             </Text>
           </Animated.View>
-          {/* Konten */}
           <Animated.View entering={FadeInRight.duration(600).delay(600).springify()}>
             <Image
               source={require("../assets/images/air-plane-image.png")}
