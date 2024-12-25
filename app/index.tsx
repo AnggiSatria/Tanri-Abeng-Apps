@@ -16,7 +16,7 @@ export default function HomeScreen() {
       <StatusBar style="light" />
       <Image
         className="mt-10"
-        source={require("../assets/images/indonesia-no-bg.png")}
+        source={require("assets/images/indonesia-no-bg.png")}
         style={styles.halfScreenImage}
       />
       <View className="h-full">
@@ -35,7 +35,7 @@ export default function HomeScreen() {
             entering={FadeInRight.duration(600).delay(600).springify()}
           >
             <Image
-              source={require("../assets/images/air-plane-image.png")}
+              source={require("assets/images/air-plane-image.png")}
               style={styles.airplaneImage}
             />
           </Animated.View>
