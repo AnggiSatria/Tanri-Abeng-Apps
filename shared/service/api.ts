@@ -26,7 +26,6 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       await AsyncStorage.removeItem('authToken');
-      // Tambahkan logika logout jika diperlukan
     }
     return Promise.reject(error);
   }
