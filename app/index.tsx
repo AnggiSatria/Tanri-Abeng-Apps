@@ -49,6 +49,7 @@ export default function HomeScreen() {
           </Animated.View>
           <Animated.View
             entering={FadeInDown.duration(200).delay(400).springify()}
+            className="mt-5"
           >
             <Text className="text-neutral-300 text-sm font-medium leading-[20px] text-center">
               Enjoy the convenience of finding tickets at the best prices and
