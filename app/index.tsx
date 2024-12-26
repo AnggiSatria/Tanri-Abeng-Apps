@@ -62,18 +62,12 @@ export default function HomeScreen() {
             className="h-1/4 w-full justify-start pt-4 px-10"
           >
             <Pressable
-              onPress={() => router.push("/(tabs)")}
+              onPress={() => router.push("/login")}
               className="bg-[#12B3A8] rounded-full justify-center items-center py-3"
             >
               <Text className="text-white font-bold text-lg">
                 Discover our feature
               </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => router.push("/login")}
-              className="bg-[#12B3A8] rounded-full justify-center items-center py-3"
-            >
-              <Text className="text-white font-bold text-lg">Discover</Text>
             </Pressable>
             <View className="flex-row mt-4 w-full justify-center gap-2">
               <Text className="text-neutral-300 font-medium text-sm leading-[38px] text-center">
