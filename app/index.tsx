@@ -16,7 +16,7 @@ export default function HomeScreen() {
       <StatusBar style="light" />
       <Image
         className="mt-10"
-        source={require("../assets/images/indonesia-no-bg.png")}
+        source={require("assets/images/indonesia-no-bg.png")}
         style={styles.halfScreenImage}
       />
       <View className="h-full">
@@ -35,7 +35,7 @@ export default function HomeScreen() {
             entering={FadeInRight.duration(600).delay(600).springify()}
           >
             <Image
-              source={require("../assets/images/air-plane-image.png")}
+              source={require("assets/images/air-plane-image.png")}
               style={styles.airplaneImage}
             />
           </Animated.View>
@@ -49,7 +49,6 @@ export default function HomeScreen() {
           </Animated.View>
           <Animated.View
             entering={FadeInDown.duration(200).delay(400).springify()}
-            className="mt-5"
           >
             <Text className="text-neutral-300 text-sm font-medium leading-[20px] text-center">
               Enjoy the convenience of finding tickets at the best prices and
@@ -68,6 +67,12 @@ export default function HomeScreen() {
               <Text className="text-white font-bold text-lg">
                 Discover our feature
               </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => router.push("/login")}
+              className="bg-[#12B3A8] rounded-full justify-center items-center py-3"
+            >
+              <Text className="text-white font-bold text-lg">Discover</Text>
             </Pressable>
             <View className="flex-row mt-4 w-full justify-center gap-2">
               <Text className="text-neutral-300 font-medium text-sm leading-[38px] text-center">
