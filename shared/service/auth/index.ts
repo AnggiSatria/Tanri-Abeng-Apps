@@ -1,14 +1,10 @@
-import { removeEmptyAttributes } from "@/shared/utils"
+import { removeEmptyAttributes } from "shared/utils"
 import api from "../api"
 import QueryString from "qs"
 
 
-const postLogin = async (payload: any, token: string) => {
-    return api.post(`/auth/login`, payload, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+const postLogin = async (payload: any) => {
+    return api.post(`/auth/login`, payload)
 }
 
 const postRegister = async (payload: any, token: string) => {
@@ -79,7 +75,7 @@ const patchUserInfo = async(payload: any, id: string, token: string) => {
     })
 }
 
-export default {
+export {
     postLogin,
     postRegister,
     postLogout,
