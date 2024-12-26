@@ -50,7 +50,7 @@ export default function RegisterScreen() {
           Create Account
         </Text>
       </Animated.View>
-      <View className="flex-1 items-center px-6 mt-6">
+      <View className="flex-1 items-center px-6">
         {/* Input Register */}
         <Animated.View
           entering={FadeInUp.duration(600).delay(300).springify()}
