@@ -49,7 +49,6 @@ export default function HomeScreen() {
           </Animated.View>
           <Animated.View
             entering={FadeInDown.duration(200).delay(400).springify()}
-            className="mt-5"
           >
             <Text className="text-neutral-300 text-sm font-medium leading-[20px] text-center">
               Airplane fly, soaring high, cutting through the endless sky. With
@@ -61,7 +60,7 @@ export default function HomeScreen() {
             entering={FadeInDown.duration(200).delay(600).springify()}
             className="h-1/4 w-full justify-start pt-4 px-10"
           >
-            <Pressable onPress={() => router.push('/(tabs)')} className="bg-[#12B3A8] rounded-full justify-center items-center py-3">
+            <Pressable onPress={() => router.push('/login')} className="bg-[#12B3A8] rounded-full justify-center items-center py-3">
               <Text className="text-white font-bold text-lg">Discover</Text>
             </Pressable>
             <View className="flex-row mt-4 w-full justify-center gap-2">
