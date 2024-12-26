@@ -16,7 +16,7 @@ import {
 } from "react-native-heroicons/outline";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import Header from "@/components/Header";
+import Header from "components/Header";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 

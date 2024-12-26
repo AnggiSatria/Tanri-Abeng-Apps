@@ -1,4 +1,4 @@
-import { removeEmptyAttributes } from "@/shared/utils"
+import { removeEmptyAttributes } from "shared/utils"
 import api from "../api"
 import QueryString from "qs"
 
