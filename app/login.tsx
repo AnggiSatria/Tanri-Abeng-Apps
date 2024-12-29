@@ -89,6 +89,7 @@ export default function LoginScreen() {
           className="w-full gap-5 space-y-4"
         >
           {/* <TextInput
+          <TextInput
             placeholder="Email"
             placeholderTextColor="#a5b4fc"
             className="bg-neutral-800 text-white p-4 rounded-lg w-full"

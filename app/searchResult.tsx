@@ -51,6 +51,7 @@ const SearchResults = () => {
 
   const renderItem = ({ item }) => (
     <View className="bg-white mx-4 my-2 rounded-lg p-4 shadow-sm">
+        <Pressable onPress={()=> router.push('/flightdetail')}>
       {/* Header */}
       <View className="flex-row justify-between items-center">
         <Text className="text-lg font-bold">{item.airlineCode}</Text>
@@ -88,6 +89,7 @@ const SearchResults = () => {
         </View>
         <Text className="text-lg font-bold text-teal-600">{item.price}</Text>
       </View>
+    </Pressable>
     </View>
   );
 
@@ -158,13 +160,14 @@ const SearchResults = () => {
         </View>
       </View>
 
-      {/* Results */}
       <View className="flex-row mx-5 mt-3 mb-3 justify-between items-center">
         <Text className="text-lg font-bold">Search Results</Text>
           <Text className="text-base text-gray-700 font-medium">
             10 results
           </Text>
       </View>
+
+      {/* Results */}
       <FlatList
         data={dummyResults}
         keyExtractor={(item) => item.id}
