@@ -15,6 +15,9 @@ module.exports = function (api) {
             "@": "./src", // Ganti dengan folder utama Anda
             "@env": "./constants/env.d.ts", // Alias tambahan jika diperlukan
           },
+          envName: 'API_HOST',
+          moduleName: '@env',
+          path: '.env',
         },
       ],
     ],

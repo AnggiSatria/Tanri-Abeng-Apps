@@ -20,6 +20,7 @@ import OrganismControlledInput from "shared/components/organisms/ControlledInput
 import OrganismButton from "shared/components/organisms/Button";
 import { useMutation } from "@tanstack/react-query";
 import { postLogin } from "shared/service";
+import Toast from "react-native-toast-message";
 
 type FormData = {
   email: string;
@@ -35,14 +36,30 @@ export default function LoginScreen() {
   });
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
     mutation
       .mutateAsync(data)
       .then((res) => {
         console.log(res);
+        Toast.show({
+          type: `success`,
+          text1: `Login Success`,
+          text2: `${res?.data?.message}`,
+        });
       })
       .catch((err) => {
-        console.log(err);
+        if (err.status === "404") {
+          Toast.show({
+            type: `error`,
+            text1: `Login Failed`,
+            text2: `${err.message}`,
+          });
+        } else {
+          Toast.show({
+            type: `error`,
+            text1: `Login Failed`,
+            text2: `${err.response.data.message}`,
+          });
+        }
       });
   };
 
@@ -53,6 +70,7 @@ export default function LoginScreen() {
         backgroundColor: "#192031",
       }}
     >
+      <Toast />
       <StatusBar style="light" />
       {/* Logo dan Gambar */}
 

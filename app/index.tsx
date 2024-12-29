@@ -73,7 +73,10 @@ export default function HomeScreen() {
               <Text className="text-neutral-300 font-medium text-sm leading-[38px] text-center">
                 Don't have an account?
               </Text>
-              <Text className="text-white font-semibold text-sm leading-[38px] text-center">
+              <Text
+                onPress={() => router.push("/register")}
+                className="text-white font-semibold text-sm leading-[38px] text-center"
+              >
                 Register
               </Text>
             </View>
