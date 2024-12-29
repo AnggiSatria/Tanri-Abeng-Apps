@@ -7,12 +7,8 @@ const postLogin = async (payload: any) => {
     return api.post(`/auth/login`, payload)
 }
 
-const postRegister = async (payload: any, token: string) => {
-    return api.post(`/auth/register`, payload, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+const postRegister = async (payload: any) => {
+    return api.post(`/auth/register`, payload)
 }
 
 const postLogout = async (payload: any, token: string) => {
