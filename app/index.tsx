@@ -8,6 +8,27 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const authToken = await AsyncStorage.getItem("userToken");
+      if (authToken) {
+        setToken(authToken);
+      } else {
+        setToken(null);
+      }
+    };
+
+    fetchToken();
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      return router.push(`/(tabs)`);
+    }
+  }, [token]);
+
   return (
     <SafeAreaView
       className="flex-1"
