@@ -39,32 +39,6 @@ const TripOption: React.FC<TripOptionProps> = ({
   pageNavigation,
   handleNavigationChange,
 }) => {
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      const authToken = await AsyncStorage.getItem("userToken");
-      if (authToken) {
-        setToken(authToken);
-      } else {
-        setToken(null);
-      }
-    };
-
-    fetchToken();
-  }, [token]);
-
-  const { data, isPending, error } = useQuery({
-    queryKey: ["authUser", token],
-    queryFn: async () => getUserInfo({}, token),
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    retry: false,
-  });
-
-  console.log(data);
-
   return (
     <View className="flex-row justify-between w-full px-4 py-2">
       <Pressable
@@ -200,6 +174,21 @@ const DepartureDate: React.FC<DepartureDateProps> = ({
 );
 
 export default function TabTwoScreen() {
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const authToken = await AsyncStorage.getItem("userToken");
+      if (authToken) {
+        setToken(authToken);
+      } else {
+        setToken(null);
+      }
+    };
+
+    fetchToken();
+  }, [token]);
+
   const [isPending, setIsPending] = useState(false);
   const [pageNavigation, setPageNavigation] = useState("oneWay");
   const [flightOfferData, setFlightOfferData] = useState<FlightOfferData>({
@@ -314,7 +303,7 @@ export default function TabTwoScreen() {
         className="h-64 mb-4 justify-start border-orange-600 w-full bg-[#192031] relative pt-16"
         style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
       >
-        <Header />
+        <Header token={token} />
       </View>
       {/* Form Area */}
       <View className="w-full px-4 mx-4 -mt-32">

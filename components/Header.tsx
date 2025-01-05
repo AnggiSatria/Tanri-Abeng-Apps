@@ -1,13 +1,32 @@
+import { useQuery } from "@tanstack/react-query";
 import { Image, View, Text } from "react-native";
+import { getUserInfo } from "shared/service";
 
-const Header = () => {
+interface Props {
+  token: string | null;
+}
+
+const Header = ({ token }: Props) => {
+  const { data, isPending, error } = useQuery({
+    queryKey: ["authUser", token],
+    queryFn: async () => getUserInfo({}, token),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
+
+  const photo = data?.data?.url?.[0]?.url;
+
+  console.log(photo);
+
   return (
     <View className="flex-row justify-between items-center px-4">
       <View className="w-1/2 flex-row h-14 items-center">
         <View className="pr-2">
           <View className="overflow-hidden">
             <Image
-              source={require("../assets/images/profile.webp")}
+              source={photo || require("../assets/images/profile.webp")}
               className="w-14 h-14 border-2 border-white rounded-full"
             />
           </View>
@@ -19,7 +38,7 @@ const Header = () => {
           </Text>
           <Text className="text-xl text-white font-bold">
             {" "}
-            William Murpy 👋
+            {data?.data?.fullName} 👋
           </Text>
         </View>
       </View>
@@ -29,9 +48,8 @@ const Header = () => {
             <Text className="text-white font-semibold">P</Text>
           </View>
           <View className="justify-start items-start gap-1">
-          <Text className="text-base text-gray-200">Flight Point</Text>
-          <Text className="text-white">✈️ 5,231</Text>
-
+            <Text className="text-base text-gray-200">Flight Point</Text>
+            <Text className="text-white">✈️ 5,231</Text>
           </View>
         </View>
       </View>
