@@ -51,7 +51,7 @@ const postResetPassword = async (payload: any, token: string) => {
     })
 }
 
-const getUserInfo = async (activeFilter: any, token: string) => {
+const getUserInfo = async (activeFilter: any, token: string | null) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )

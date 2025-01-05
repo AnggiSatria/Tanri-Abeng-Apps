@@ -20,6 +20,8 @@ import Header from "components/Header";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQuery } from "@tanstack/react-query";
+import { getUserInfo } from "shared/service";
 
 interface TripOptionProps {
   pageNavigation: string;
@@ -39,8 +41,6 @@ const TripOption: React.FC<TripOptionProps> = ({
 }) => {
   const [token, setToken] = useState<string | null>(null);
 
-  console.log(token);
-
   useEffect(() => {
     const fetchToken = async () => {
       const authToken = await AsyncStorage.getItem("userToken");
@@ -54,11 +54,16 @@ const TripOption: React.FC<TripOptionProps> = ({
     fetchToken();
   }, [token]);
 
-  // useEffect(() => {
-  //   if (!token) {
-  //     return router.push(`/login`);
-  //   }
-  // }, [token]);
+  const { data, isPending, error } = useQuery({
+    queryKey: ["authUser", token],
+    queryFn: async () => getUserInfo({}, token),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
+
+  console.log(data);
 
   return (
     <View className="flex-row justify-between w-full px-4 py-2">
