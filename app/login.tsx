@@ -35,7 +35,9 @@ export default function LoginScreen() {
     mutationKey: ["login"],
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
+  const onSubmit: SubmitHandler<FormData> = async (data: any) => {
+    console.log(data);
+
     mutation
       .mutateAsync(data)
       .then((res) => {
@@ -45,6 +47,8 @@ export default function LoginScreen() {
           text1: `Login Success`,
           text2: `${res?.data?.message}`,
         });
+
+        router.push(`/(tabs)`);
       })
       .catch((err) => {
         if (err.status === "404") {
@@ -78,12 +82,10 @@ export default function LoginScreen() {
         entering={FadeInDown.duration(200).springify()}
         className="flex-row justify-center items-center pb-5"
       >
-        <MaterialCommunityIcons name="airplane" size={24} color="#12B3A8" />
-        <Text className="text-[#FFFFFF] text-xl font-light leading-[60px] pl-1">
-          Univ
-        </Text>
+        <MaterialCommunityIcons name="ticket" size={24} color="#12B3A8" />
+        <Text className="text-[#FFFFFF] text-xl font-light leading-[60px] pl-1"></Text>
         <Text className="text-[#12B3A8] text-xl leading-[60px] pl-1 italic">
-          Airplane
+          Ticket ID
         </Text>
       </Animated.View>
       <View className="flex-1 items-center px-6 mt-6">

@@ -15,10 +15,11 @@ import {
   PaperAirplaneIcon,
 } from "react-native-heroicons/outline";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "components/Header";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface TripOptionProps {
   pageNavigation: string;
@@ -36,6 +37,29 @@ const TripOption: React.FC<TripOptionProps> = ({
   pageNavigation,
   handleNavigationChange,
 }) => {
+  const [token, setToken] = useState<string | null>(null);
+
+  console.log(token);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const authToken = await AsyncStorage.getItem("userToken");
+      if (authToken) {
+        setToken(authToken);
+      } else {
+        setToken(null);
+      }
+    };
+
+    fetchToken();
+  }, [token]);
+
+  // useEffect(() => {
+  //   if (!token) {
+  //     return router.push(`/login`);
+  //   }
+  // }, [token]);
+
   return (
     <View className="flex-row justify-between w-full px-4 py-2">
       <Pressable
