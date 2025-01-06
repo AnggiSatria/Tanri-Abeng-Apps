@@ -20,19 +20,43 @@ import * as ImagePicker from "expo-image-picker";
 export default function RegisterScreen() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const handleImagePick = async () => {
+//   const handleImagePick = async () => {
+//     const result = await ImagePicker.launchImageLibraryAsync({
+//       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+//       allowsEditing: true,
+//       aspect: [1, 1],
+//       quality: 1,
+//     });
+
+//     if (!result.canceled) {
+//       setSelectedImage(result.assets[0].uri);
+//     }
+//   };
+
+const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
-
+  
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+  
+      try {
+        // Convert the image URI to a blob
+        const response = await fetch(uri);
+        const blob = await response.blob();
+  
+        console.log("Blob created:", blob); // You can now use the blob (e.g., upload to a server)
+        setSelectedImage(uri); // Still display the image preview using the URI
+      } catch (error) {
+        console.error("Error converting image to blob:", error);
+      }
     }
   };
-
+  
   return (
     <SafeAreaView
       className="flex-1"

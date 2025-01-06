@@ -7,89 +7,90 @@ const SearchResults = () => {
   const dummyResults = [
     {
       id: "1",
-      airlineCode: "GA",
-      fromCity: "Jakarta",
-      fromAirport: "CGK",
-      toCity: "Surabaya",
-      toAirport: "SUB",
-      duration: "1 hour 30 minutes",
-      stops: "Non-stop",
-      departureTime: "08:30 AM",
-      arrivalTime: "10:00 AM",
-      cabin: "Economy",
-      price: "IDR 750,000",
+      homeTeam: "Barcelona",
+      awayTeam: "Real Madrid",
+      matchDate: "2024-07-30",
+      matchTime: "20:00",
+      venue: "Camp Nou",
+      ticketAvailability: "Available",
+      price: "IDR 500,000",
     },
     {
       id: "2",
-      airlineCode: "SJ",
-      fromCity: "Bali",
-      fromAirport: "DPS",
-      toCity: "Jakarta",
-      toAirport: "CGK",
-      duration: "2 hours 10 minutes",
-      stops: "Non-stop",
-      departureTime: "01:00 PM",
-      arrivalTime: "03:10 PM",
-      cabin: "Business",
-      price: "IDR 2,500,000",
+      homeTeam: "Manchester United",
+      awayTeam: "Chelsea",
+      matchDate: "2024-08-10",
+      matchTime: "22:00",
+      venue: "Old Trafford",
+      ticketAvailability: "Sold Out",
+      price: "IDR 750,000",
     },
     {
       id: "3",
-      airlineCode: "ID",
-      fromCity: "Makassar",
-      fromAirport: "UPG",
-      toCity: "Balikpapan",
-      toAirport: "BPN",
-      duration: "1 hour 20 minutes",
-      stops: "Non-stop",
-      departureTime: "10:20 AM",
-      arrivalTime: "11:40 AM",
-      cabin: "Economy",
-      price: "IDR 1,200,000",
+      homeTeam: "Juventus",
+      awayTeam: "AC Milan",
+      matchDate: "2024-09-05",
+      matchTime: "18:00",
+      venue: "Allianz Stadium",
+      ticketAvailability: "Pending",
+      price: "IDR 300,000",
     },
   ];
 
   const renderItem = ({ item }) => (
     <View className="bg-white mx-4 my-2 rounded-lg p-4 shadow-sm">
-        <Pressable onPress={()=> router.push('/flightdetail')}>
-      {/* Header */}
-      <View className="flex-row justify-between items-center">
-        <Text className="text-lg font-bold">{item.airlineCode}</Text>
-        <View className="bg-green-100 px-2 py-1 rounded-lg">
-          <Text className="text-xs text-green-700 font-semibold">
-            Recommended
+      <Pressable onPress={() => router.push('/flightdetail')}>
+        {/* Header */}
+        <View className="flex-row justify-between items-center">
+          <Text className="text-lg font-bold">
+            {item.homeTeam} vs {item.awayTeam}
           </Text>
+          <View className="bg-green-100 px-2 py-1 rounded-lg">
+            <Text className="text-xs text-green-700 font-semibold">
+              {item.ticketAvailability === "Sold Out" ? "Sold Out" : "Available"}
+            </Text>
+          </View>
         </View>
-      </View>
-      {/* Route Information */}
-      <View className="flex-row justify-between items-center mt-2">
-        <View>
-          <Text className="text-gray-700 font-bold">{item.fromCity}</Text>
-          <Text className="text-sm text-gray-500">{item.fromAirport}</Text>
+        {/* Match Information */}
+        <View className="flex-row justify-between items-center mt-2">
+          <View>
+            <Text className="text-gray-700 font-bold">{item.matchDate}</Text>
+            <Text className="text-sm text-gray-500">Time: {item.matchTime}</Text>
+          </View>
+          <MaterialCommunityIcons name="stadium" size={24} color="teal" />
+          <View>
+            <Text className="text-gray-700 font-bold">{item.venue}</Text>
+          </View>
         </View>
-        <MaterialCommunityIcons name="airplane" size={24} color="teal" />
-        <View>
-          <Text className="text-gray-700 font-bold">{item.toCity}</Text>
-          <Text className="text-sm text-gray-500">{item.toAirport}</Text>
+        {/* Footer */}
+        <View className="flex-row justify-between items-center mt-4">
+          <Text className="text-lg font-bold text-teal-600">{item.price}</Text>
+          <View
+            style={{
+              backgroundColor:
+                item.ticketAvailability === "Sold Out"
+                  ? "red"
+                  : item.ticketAvailability === "Pending"
+                  ? "yellow"
+                  : "green",
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+              borderRadius: 15,
+              alignSelf: "flex-start",
+              marginTop: 5,
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontWeight: "bold",
+              }}
+            >
+              {item.ticketAvailability}
+            </Text>
+          </View>
         </View>
-      </View>
-      {/* Time and Stops */}
-      <View className="flex-row justify-between items-center mt-2">
-        <Text className="text-sm text-gray-600">{item.departureTime}</Text>
-        <Text className="text-xs text-gray-500">{item.stops}</Text>
-        <Text className="text-sm text-gray-600">{item.arrivalTime}</Text>
-      </View>
-      {/* Duration */}
-      <Text className="text-xs text-gray-500 mt-1">{item.duration}</Text>
-      {/* Footer */}
-      <View className="flex-row justify-between items-center mt-4">
-        <View className="flex-row items-center">
-          <MaterialCommunityIcons name="seat" size={18} color="gray" />
-          <Text className="text-sm text-gray-700 ml-1">{item.cabin}</Text>
-        </View>
-        <Text className="text-lg font-bold text-teal-600">{item.price}</Text>
-      </View>
-    </Pressable>
+      </Pressable>
     </View>
   );
 
@@ -116,55 +117,13 @@ const SearchResults = () => {
             color="white"
           />
         </View>
-        {/* Route */}
-        <View className="flex-row mx-auto mt-3 justify-start items-center px-8">
-          <View>
-            <Text className="text-lg font-bold text-white">Jakarta</Text>
-          </View>
-          <View className="w-[60%] justify-center items-center flex-row">
-            <MaterialCommunityIcons
-              name="arrow-right"
-              size={30}
-              color="white"
-            />
-          </View>
-          <View>
-            <Text className="text-lg font-bold text-white">Bali</Text>
-          </View>
-        </View>
-        <View className="flex-row mx-auto mt-3 justify-between items-center px-6 py-2 bg-white rounded-lg">
-          {/* Kolom Tanggal */}
-          <View className="flex items-center">
-            <Text className="text-sm font-semibold text-black">2024-07-30</Text>
-          </View>
-
-          {/* Titik */}
-          <View className="flex items-center mx-2">
-            <MaterialCommunityIcons name="circle" size={6} color="gray" />
-          </View>
-
-          {/* Jumlah Kursi */}
-          <View className="flex items-center">
-            <Text className="text-sm font-semibold text-black">1 seat</Text>
-          </View>
-
-          {/* Titik */}
-          <View className="flex items-center mx-2">
-            <MaterialCommunityIcons name="circle" size={6} color="gray" />
-          </View>
-
-          {/* Kelas */}
-          <View className="flex items-center">
-            <Text className="text-sm font-semibold text-black">Economy</Text>
-          </View>
-        </View>
       </View>
 
       <View className="flex-row mx-5 mt-3 mb-3 justify-between items-center">
         <Text className="text-lg font-bold">Search Results</Text>
-          <Text className="text-base text-gray-700 font-medium">
-            10 results
-          </Text>
+        <Text className="text-base text-gray-700 font-medium">
+          {dummyResults.length} results
+        </Text>
       </View>
 
       {/* Results */}
