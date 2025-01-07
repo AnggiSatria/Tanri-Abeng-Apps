@@ -8,6 +8,7 @@ import {
   Pressable,
   TextInput,
   FlatList,
+  ScrollView,
 } from "react-native";
 import {
   ArrowPathRoundedSquareIcon,
@@ -15,10 +16,12 @@ import {
   PaperAirplaneIcon,
 } from "react-native-heroicons/outline";
 import { StatusBar } from "expo-status-bar";
+import { Picker } from "@react-native-picker/picker"; // Install library jika belum terpasang
 import React, { useEffect, useState } from "react";
 import Header from "components/Header";
 import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+// import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import { getUserInfo } from "shared/service";
@@ -63,7 +66,7 @@ const TripOption: React.FC<TripOptionProps> = ({
             }`}
             style={{ fontWeight: pageNavigation === "oneWay" ? "700" : "500" }}
           >
-            One Way
+            Domestic Match
           </Text>
         </View>
       </Pressable>
@@ -93,7 +96,7 @@ const TripOption: React.FC<TripOptionProps> = ({
               fontWeight: pageNavigation === "roundTrip" ? "700" : "500",
             }}
           >
-            Round Trip
+            Internasional Match
           </Text>
         </View>
       </Pressable>
@@ -191,6 +194,7 @@ export default function TabTwoScreen() {
 
   const [isPending, setIsPending] = useState(false);
   const [pageNavigation, setPageNavigation] = useState("oneWay");
+  const [selectedClass, setSelectedClass] = useState("Economy"); // State untuk menyimpan kelas yang dipilih
   const [flightOfferData, setFlightOfferData] = useState<FlightOfferData>({
     originLocationCode: "",
     destinationLocationCode: "",
@@ -202,18 +206,44 @@ export default function TabTwoScreen() {
   const dummyResults = [
     {
       id: "1",
-      airlineCode: "GA",
-      fromCity: "Jakarta",
-      fromAirport: "CGK",
-      toCity: "Surabaya",
-      toAirport: "SUB",
-      duration: "1 hour 30 minutes",
-      stops: "Non-stop",
-      departureTime: "08:30 AM",
-      arrivalTime: "10:00 AM",
-      cabin: "Economy",
-      price: "IDR 750,000",
+      matchCode: "FC001",
+      homeTeam: "Manchester United",
+      awayTeam: "Liverpool",
+      seat: "3 seat",
+      class: "VVIP",
+      matchDate: "2025-01-15",
+      matchTime: "19:00",
+      venue: "Old Trafford, Manchester",
+      price: "IDR 500,000",
+      ticketAvailability: "Lunas",
     },
+    {
+      id: "2",
+      matchCode: "FC002",
+      homeTeam: "Barcelona",
+      awayTeam: "Real Madrid",
+      seat: "3 seat",
+      class: "VVIP",
+      matchDate: "2025-01-20",
+      matchTime: "21:00",
+      venue: "Camp Nou, Barcelona",
+      price: "IDR 700,000",
+      ticketAvailability: "Lunas",
+    },
+    {
+      id: "3",
+      matchCode: "FC003",
+      homeTeam: "Juventus",
+      awayTeam: "AC Milan",
+      seat: "3 seat",
+      class: "VVIP",
+      matchDate: "2025-02-10",
+      matchTime: "22:00",
+      venue: "Allianz Stadium, Turin",
+      price: "IDR 600,000",
+      ticketAvailability: "Pending",
+    },
+    // Tambahkan lebih banyak pertandingan sesuai kebutuhan
   ];
   const renderItem = ({ item }) => (
     <View className="bg-white mx-4 my-2 rounded-lg p-4 shadow-sm">
@@ -288,127 +318,190 @@ export default function TabTwoScreen() {
   };
 
   return (
-    <View className="flex-1 items-center relative bg-[#F5F7FA]">
-      <StatusBar style="light" />
-      {isPending && (
-        <View className="absolute z-50 w-full h-full justify-center items-center">
-          <View className="bg-[#000000] bg-opacity-50 h-full w-full justify-center items-center"></View>
-          <View className="absolute">
-            <ActivityIndicator size="large" color="#fff" />
+    <ScrollView className="flex-1 bg-[#F5F7FA]">
+      <View className="flex-1 items-center relative bg-[#F5F7FA]">
+        <StatusBar style="light" />
+        {isPending && (
+          <View className="absolute z-50 w-full h-full justify-center items-center">
+            <View className="bg-[#000000] bg-opacity-50 h-full w-full justify-center items-center"></View>
+            <View className="absolute">
+              <ActivityIndicator size="large" color="#fff" />
+            </View>
           </View>
+        )}
+        {/* Header */}
+        <View
+          className="h-64 mb-4 justify-start border-orange-600 w-full bg-[#192031] relative pt-16"
+          style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
+        >
+          <Header token={token} />
         </View>
-      )}
-      {/* Header */}
-      <View
-        className="h-64 mb-4 justify-start border-orange-600 w-full bg-[#192031] relative pt-16"
-        style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
-      >
-        <Header token={token} />
-      </View>
-      {/* Form Area */}
-      <View className="w-full px-4 mx-4 -mt-32">
-        <View className="bg-white rounded-3xl pt-3 pb-4 shadow-md shadow-slate-300">
-          <View className="flex-row justify-between w-full px-4 py-2">
-            <TripOption
-              pageNavigation={pageNavigation}
-              handleNavigationChange={handleNavigationChange}
-            />
-          </View>
-          {/* Location Input */}
-          <LocationInput
-            placeholder={
-              searchFlightData.originCity
-                ? searchFlightData.originCity
-                : "Depature City"
-            }
-            icon={
-              <FontAwesome5 size={20} color="gray" name="plane-departure" />
-            }
-            value={searchFlightData.originCity}
-            onPress={() => router.push("/departure")}
-          />
-          <LocationInput
-            placeholder={
-              searchFlightData.destinationCity
-                ? searchFlightData.destinationCity
-                : "Destination City"
-            }
-            icon={<FontAwesome5 size={20} color="gray" name="plane-arrival" />}
-            value={searchFlightData.destinationCity}
-            onPress={() => router.push("/destination")}
-          />
-          <DepartureDate
-            placeholder={
-              selectedDate && selectedDate.length > 0
-                ? selectedDate.replace(/^"|"$/g, "")
-                : "Depature Date"
-            }
-            icon={<FontAwesome5 size={20} color="gray" name="calendar-alt" />}
-            value={searchFlightData.departureDate.replace(/^"|"$/g, "")}
-            onPress={() => router.push("/departuredate")}
-          />
-          {/* Seat */}
-          <View className="border-2 border-gray-500 mx-4 py-3 rounded-2xl justify-center flex-row items-center pl-4">
-            <View>
-              <MaterialCommunityIcons
-                size={20}
-                color="gray"
-                name="seat-passenger"
+        {/* Form Area */}
+        <View className="w-full px-4 mx-4 -mt-32">
+          <View className="bg-white rounded-3xl pt-3 pb-4 shadow-md shadow-slate-300">
+            <View className="flex-row justify-between w-full px-4 py-2">
+              <TripOption
+                pageNavigation={pageNavigation}
+                handleNavigationChange={handleNavigationChange}
               />
             </View>
-            <TextInput
-              className="w-[85%] text-base px-4 text-gray-600 font-semibold"
-              placeholder="Seat"
-              keyboardType="numeric"
-              value={String(searchFlightData.seat)}
-              onChangeText={(text) => {
-                const seatValue = parseInt(text, 10);
-
-                const validSeatValue = isNaN(seatValue) ? 0 : seatValue;
-
-                setSeacrhFlightData((prev) => ({
-                  ...prev,
-                  seat: validSeatValue,
-                }));
-
-                setFlightOfferData((prev) => ({
-                  ...prev,
-                  adults: validSeatValue,
-                }));
-              }}
+            <View className="mx-4 my-3">
+              {/* <Text className="text-gray-700 font-semibold mb-2">Select Class</Text> */}
+              <View className="border-2 border-gray-500 rounded-2xl">
+                <Picker
+                  selectedValue={selectedClass}
+                  onValueChange={(itemValue) => setSelectedClass(itemValue)}
+                  style={{ height: 50, color: "gray" }}
+                >
+                  <Picker.Item label="Economy" value="Economy" />
+                  <Picker.Item label="Medium" value="Medium" />
+                  <Picker.Item label="VIP" value="VIP" />
+                  <Picker.Item label="VVIP" value="VVIP" />
+                  <Picker.Item
+                    label="Supporters Section"
+                    value="Supporters Section"
+                  />
+                </Picker>
+              </View>
+            </View>
+            <DepartureDate
+              placeholder={
+                selectedDate && selectedDate.length > 0
+                  ? selectedDate.replace(/^"|"$/g, "")
+                  : "Depature Date"
+              }
+              icon={<FontAwesome5 size={20} color="gray" name="calendar-alt" />}
+              value={searchFlightData.departureDate.replace(/^"|"$/g, "")}
+              onPress={() => router.push("/departuredate")}
             />
+            {/* Seat */}
+            <View className="border-2 border-gray-500 mx-4 py-3 rounded-2xl justify-center flex-row items-center pl-4">
+              <View>
+                <MaterialCommunityIcons
+                  size={20}
+                  color="gray"
+                  name="seat-passenger"
+                />
+              </View>
+              <TextInput
+                className="w-[85%] text-base px-4 text-gray-600 font-semibold"
+                placeholder="Seat"
+                keyboardType="numeric"
+                maxLength={1} // Membatasi input hanya 1 karakter jika diperlukan
+                value={String(searchFlightData.seat)}
+                onChangeText={(text) => {
+                  // Konversi teks menjadi angka
+                  const seatValue = parseInt(text, 10);
+
+                  // Validasi nilai maksimal 4
+                  const validSeatValue =
+                    isNaN(seatValue) || seatValue > 4 ? 4 : seatValue;
+
+                  // Update state hanya jika valid
+                  setSeacrhFlightData((prev) => ({
+                    ...prev,
+                    seat: validSeatValue,
+                  }));
+
+                  // setFlightOfferData((prev) => ({
+                  //   ...prev,
+                  //   adults: validSeatValue,
+                  // }));
+                }}
+              />
+            </View>
+            {/* search button */}
+            <View className="w-full justify-start pt-2 px-4 mt-2">
+              <Pressable
+                className="bg-[#12B3AB] rounded-lg justify-center items-center py-4"
+                onPress={handleSearch}
+              >
+                <Text className="text-center text-lg text-white font-bold">
+                  Search
+                </Text>
+              </Pressable>
+            </View>
           </View>
-          {/* search button */}
-          <View className="w-full justify-start pt-2 px-4 mt-2">
+          <View className="flex-row justify-between items-center px-5 py-4">
+            <Text className="text-lg font-semibold text-black">
+              Archive Tiket
+            </Text>
             <Pressable
-              className="bg-[#12B3AB] rounded-lg justify-center items-center py-4"
-              onPress={handleSearch}
+              className="flex-row justify-center items-center gap-2"
+              onPress={() => {}}
             >
-              <Text className="text-center text-lg text-white font-bold">
-                Search
-              </Text>
+              <Text className="text-sm font-semibold text-black">see more</Text>
             </Pressable>
           </View>
-        </View>
-        <View className="flex-row justify-between items-center px-5 py-4">
-          <Text className="text-lg font-semibold text-black">
-            Archive Tiket
-          </Text>
-          <Pressable
-            className="flex-row justify-center items-center gap-2"
-            onPress={() => {}}
-          >
-            <Text className="text-sm font-semibold text-black">see more</Text>
-          </Pressable>
-        </View>
-        <FlatList
+          {/* <FlatList
+        horizontal
           data={dummyResults}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+        />  */}
+          <FlatList
+            data={dummyResults}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  width: "100%", // Menggunakan lebar penuh untuk elemen vertikal
+                  marginVertical: 10, // Memberikan jarak vertikal antar item
+                  padding: 10,
+                  backgroundColor: "#ffffff", // Mengubah warna latar belakang menjadi putih
+                  borderRadius: 8,
+                }}
+              >
+                <View className="flex justify-between">
+                  <Text style={{ fontWeight: "bold" }}>
+                    {item.homeTeam} vs {item.awayTeam}
+                  </Text>
+                  <Text>{item.seat} </Text>
+                  <Text>
+                    {item.matchDate} at {item.matchTime}
+                  </Text>
+                  <Text>{item.venue}</Text>
+                  <Text>{item.class}</Text>
+
+                  <View
+                    style={{
+                      backgroundColor:
+                        item.ticketAvailability === "Cancel"
+                          ? "red"
+                          : item.ticketAvailability === "Pending"
+                          ? "#ffd32c"
+                          : item.ticketAvailability === "Lunas"
+                          ? "green"
+                          : "black", // Default warna jika status tidak ditemukan
+                      paddingVertical: 5,
+                      paddingHorizontal: 10,
+                      borderRadius: 15, // Membuat bentuk melengkung
+                      alignSelf: "flex-start", // Agar badge berada di sisi kiri
+                      marginTop: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#f5f5f5",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.ticketAvailability}
+                    </Text>
+                  </View>
+
+                  <Text style={{ fontWeight: "bold" }}>
+                    Price: {item.price}
+                  </Text>
+                </View>
+              </View>
+            )}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

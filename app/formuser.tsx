@@ -95,37 +95,6 @@ const FormUser: React.FC = () => {
           }}
         />
 
-        {/* Class Type Select (Dropdown) */}
-        <Text className="text-sm text-gray-600 pb-2">Class</Text>
-        <RNPickerSelect
-          onValueChange={(value) => setClassType(value)} // Set class type
-          items={[
-            { label: 'Economy', value: 'Economy' },
-            { label: 'Business', value: 'Business' },
-          ]}
-          value={classType} // Default value
-          style={{
-            inputIOS: {
-              borderColor: "#ccc",
-              borderWidth: 1,
-              borderRadius: 8,
-              backgroundColor: "white",
-              marginBottom: 12,
-            },
-            inputAndroid: {
-              borderColor: "#ccc",
-              borderWidth: 1,
-              borderRadius: 8,
-              backgroundColor: "white",
-              marginBottom: 5,
-            },
-          }}
-          placeholder={{
-            label: "Select seat class...",
-            value: null,
-          }}
-        />
-
         {/* Date of Birth Picker */}
         <Text className="text-sm text-gray-600 mt-4">Date of Birth</Text>
         <Pressable
