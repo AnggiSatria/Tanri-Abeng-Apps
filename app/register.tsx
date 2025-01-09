@@ -19,7 +19,7 @@ import Toast from "react-native-toast-message";
 import OrganismControlledInput from "shared/components/organisms/ControlledInput";
 import PasswordFieldOrganism from "shared/components/organisms/PasswordFieldOrganism";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import PhoneNumberInputFieldOrganism from "shared/components/organisms/PhoneNumberInput";
+// import PhoneNumberInputFieldOrganism from "shared/components/organisms/PhoneNumberInput";
 import PhoneNumberInputOrganism from "shared/components/organisms/PhoneNumber";
 
 type FormData = {
@@ -27,6 +27,7 @@ type FormData = {
   lastName: string;
   email: string;
   password: string;
+  phoneNumber: string;
   url: string[]; // URL is now an array of strings
 };
 
@@ -160,14 +161,14 @@ export default function RegisterScreen() {
             placeholder="Enter your password"
           />
 
-          {/* <PhoneNumberInputOrganism
+          <PhoneNumberInputOrganism
             control={control}
             rules={{ required: "Phone Number is required" }}
             name="phoneNumber"
             placeholder="Enter your phone number"
             onChangePhoneNumber={(params) => console.log(params)}
             onChangeSelectedCountry={(params) => console.log(params)}
-          /> */}
+          />
         </Animated.View>
 
         {/* Upload Gambar */}

@@ -29,10 +29,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# Local env files
-.env
-.env.*
-!.env.example
+# # Local env files
+# .env
+# .env.*
+# !.env.example
 
 .pnpm-store
 
