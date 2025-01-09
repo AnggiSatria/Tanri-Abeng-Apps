@@ -133,7 +133,7 @@ export default function LoginScreen() {
           <PasswordFieldOrganism
             control={control}
             name="password"
-            // rules={{ required: "Password is required" }}
+            rules={{ required: "Password is required" }}
             placeholder="Enter your password"
             // customStyles={{}}
           />
