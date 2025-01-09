@@ -26,6 +26,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts, getTransactions, getUserInfo } from "shared/service";
 import { User } from "shared/lib";
+import { getItem } from "shared/utils/getStorage";
 
 interface TripOptionProps {
   pageNavigation: string;
@@ -180,6 +181,8 @@ const DepartureDate: React.FC<DepartureDateProps> = ({
 export default function TabTwoScreen() {
   const [token, setToken] = useState<string | null>(null);
 
+  console.log(token);
+
   useEffect(() => {
     const fetchToken = async () => {
       const authToken = await AsyncStorage.getItem("userToken");
@@ -192,6 +195,15 @@ export default function TabTwoScreen() {
 
     fetchToken();
   }, [token]);
+
+  // useEffect(() => {
+  //   const removeItem = async () => {
+  //     const authToken = await AsyncStorage.removeItem("userToken");
+
+  //   };
+
+  //   removeItem();
+  // }, [token]);
 
   const {
     data: dataUser,

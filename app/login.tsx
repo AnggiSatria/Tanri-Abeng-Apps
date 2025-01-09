@@ -22,6 +22,7 @@ import { useMutation } from "@tanstack/react-query";
 import { postLogin } from "shared/service";
 import Toast from "react-native-toast-message";
 import PasswordFieldOrganism from "shared/components/organisms/PasswordFieldOrganism";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type FormData = {
   email: string;
@@ -32,16 +33,14 @@ export default function LoginScreen() {
   const { control, handleSubmit } = useForm<FormData>();
 
   const mutation = useMutation({
-    mutationFn: async (payload) => postLogin(payload),
+    mutationFn: async (payload: any) => postLogin(payload),
     mutationKey: ["login"],
   });
 
   const onSubmit: SubmitHandler<FormData> = async (data: any) => {
-    console.log(data);
-
     mutation
       .mutateAsync(data)
-      .then((res) => {
+      .then((res: any) => {
         console.log(res);
         Toast.show({
           type: `success`,
@@ -49,9 +48,15 @@ export default function LoginScreen() {
           text2: `${res?.data?.message}`,
         });
 
-        router.push(`/(tabs)`);
+        if (res.status === 200) {
+          const setToken = async () => {
+            await AsyncStorage.setItem("userToken", res.data.token);
+          };
+          setToken();
+          router.push(`/(tabs)`);
+        }
       })
-      .catch((err) => {
+      .catch((err: any) => {
         if (err.status === "404") {
           Toast.show({
             type: `error`,

@@ -4,7 +4,6 @@ import Config from "react-native-config";
 
 const baseURL = Config.API_HOST || `https://api.kontenbase.com/query/api/v1/f8c8b679-54eb-449f-869b-0434d39326d3`;
 
-console.log(`test`, baseURL);
 
 const api = axios.create({
   baseURL,
