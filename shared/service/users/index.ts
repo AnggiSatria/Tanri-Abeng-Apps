@@ -75,7 +75,7 @@ const deleteUserById = async(id: string, token: string) => {
 }
 
 
-export default {
+export {
     getUsers,
     getUserById,
     getUserBySummary,

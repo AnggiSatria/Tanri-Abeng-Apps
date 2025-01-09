@@ -21,6 +21,7 @@ import OrganismButton from "shared/components/organisms/Button";
 import { useMutation } from "@tanstack/react-query";
 import { postLogin } from "shared/service";
 import Toast from "react-native-toast-message";
+import PasswordFieldOrganism from "shared/components/organisms/PasswordFieldOrganism";
 
 type FormData = {
   email: string;
@@ -128,12 +129,13 @@ export default function LoginScreen() {
             placeholder="Enter your email"
             customStyles={{}}
           />
-          <OrganismControlledInput
+
+          <PasswordFieldOrganism
             control={control}
             name="password"
-            rules={{ required: "Password is required" }}
+            // rules={{ required: "Password is required" }}
             placeholder="Enter your password"
-            customStyles={{}}
+            // customStyles={{}}
           />
         </Animated.View>
 

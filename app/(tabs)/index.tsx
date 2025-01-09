@@ -24,7 +24,8 @@ import { router } from "expo-router";
 // import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
-import { getUserInfo } from "shared/service";
+import { getProducts, getTransactions, getUserInfo } from "shared/service";
+import { User } from "shared/lib";
 
 interface TripOptionProps {
   pageNavigation: string;
@@ -192,6 +193,22 @@ export default function TabTwoScreen() {
     fetchToken();
   }, [token]);
 
+  const {
+    data: dataUser,
+    isPending: isPendingUser,
+    error: errorUser,
+  } = useQuery({
+    queryKey: ["authUser", token],
+    queryFn: async () => getUserInfo({}, token),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+    enabled: !!token,
+  });
+
+  const AuthUser: User | any = dataUser;
+
   const [isPending, setIsPending] = useState(false);
   const [pageNavigation, setPageNavigation] = useState("oneWay");
   const [selectedClass, setSelectedClass] = useState("Economy"); // State untuk menyimpan kelas yang dipilih
@@ -203,98 +220,35 @@ export default function TabTwoScreen() {
     adults: 0,
     maxResults: 10,
   });
-  const dummyResults = [
-    {
-      id: "1",
-      matchCode: "FC001",
-      homeTeam: "Manchester United",
-      awayTeam: "Liverpool",
-      seat: "3 seat",
-      class: "VVIP",
-      matchDate: "2025-01-15",
-      matchTime: "19:00",
-      venue: "Old Trafford, Manchester",
-      price: "IDR 500,000",
-      ticketAvailability: "Lunas",
-    },
-    {
-      id: "2",
-      matchCode: "FC002",
-      homeTeam: "Barcelona",
-      awayTeam: "Real Madrid",
-      seat: "3 seat",
-      class: "VVIP",
-      matchDate: "2025-01-20",
-      matchTime: "21:00",
-      venue: "Camp Nou, Barcelona",
-      price: "IDR 700,000",
-      ticketAvailability: "Lunas",
-    },
-    {
-      id: "3",
-      matchCode: "FC003",
-      homeTeam: "Juventus",
-      awayTeam: "AC Milan",
-      seat: "3 seat",
-      class: "VVIP",
-      matchDate: "2025-02-10",
-      matchTime: "22:00",
-      venue: "Allianz Stadium, Turin",
-      price: "IDR 600,000",
-      ticketAvailability: "Pending",
-    },
-    // Tambahkan lebih banyak pertandingan sesuai kebutuhan
-  ];
-  const renderItem = ({ item }) => (
-    <View className="bg-white mx-4 my-2 rounded-lg p-4 shadow-sm">
-      {/* Header */}
-      <View className="flex-row justify-between items-center">
-        <Text className="text-base font-bold">
-          {item.airlineCode} - Garuda Indonesia ACC24
-        </Text>
-        {/* <View className="bg-green-100 px-2 py-1 rounded-lg">
-            <Text className="text-xs text-green-700 font-semibold">
-              Recommended
-            </Text>
-          </View> */}
-      </View>
-      {/* Route Information */}
-      <View className="flex-row justify-between items-center mt-2">
-        <View>
-          <Text className="text-gray-700 font-bold">{item.fromCity}</Text>
-          <Text className="text-sm text-gray-500">{item.fromAirport}</Text>
-        </View>
-        <MaterialCommunityIcons name="airplane" size={24} color="teal" />
-        <View>
-          <Text className="text-gray-700 font-bold">{item.toCity}</Text>
-          <Text className="text-sm text-gray-500">{item.toAirport}</Text>
-        </View>
-      </View>
-      {/* Time and Stops */}
-      <View className="flex-row justify-between items-center mt-2">
-        <Text className="text-sm text-gray-600">{item.departureTime}</Text>
-        <Text className="text-xs text-gray-500">{item.stops}</Text>
-        <Text className="text-sm text-gray-600">{item.arrivalTime}</Text>
-      </View>
-      {/* Duration */}
-      <Text className="text-xs text-gray-500 mt-1">{item.duration}</Text>
-      {/* Footer */}
-      <View className="flex-row justify-between items-center mt-4">
-        <View className="flex-row items-center">
-          <MaterialCommunityIcons name="seat" size={18} color="gray" />
-          <Text className="text-sm text-gray-700 ml-1">{item.cabin}</Text>
-        </View>
-        <Text className="text-lg font-bold text-teal-600">{item.price}</Text>
-      </View>
-    </View>
-  );
+
+  const {
+    data: dataTransactions,
+    isLoading: loadingTransactions,
+    error: errorTransactions,
+  } = useQuery({
+    queryKey: ["listTransactions", token, AuthUser],
+    queryFn: async () =>
+      getTransactions(
+        {
+          userId: AuthUser?.data?._id,
+        },
+        token
+      ),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+    enabled: !!token && !!AuthUser,
+  });
+
+  const ListTransactions = dataTransactions?.data;
+
   const handleSearch = () => {
-    // Dummy data to be sent as query parameters
     const searchQuery = {
       originCity: searchFlightData.originCity,
       destinationCity: searchFlightData.destinationCity,
       departureDate: searchFlightData.departureDate,
-      seat: searchFlightData.seat.toString(), // Mengonversi seat menjadi string
+      seat: searchFlightData.seat.toString(),
     };
 
     // Membuat query string dari object searchQuery
@@ -304,7 +258,7 @@ export default function TabTwoScreen() {
     router.push(`/searchResult?${queryString}`);
   };
 
-  const [searchFlightData, setSeacrhFlightData] = useState<searchFlightData>({
+  const [searchFlightData, setSearchFlightData] = useState<searchFlightData>({
     originCity: "Soekarno-Hatta (CGK)",
     destinationCity: "Ngurah Rai (DPS)",
     departureDate: "31-01-2024",
@@ -334,7 +288,7 @@ export default function TabTwoScreen() {
           className="h-64 mb-4 justify-start border-orange-600 w-full bg-[#192031] relative pt-16"
           style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
         >
-          <Header token={token} />
+          <Header data={AuthUser} />
         </View>
         {/* Form Area */}
         <View className="w-full px-4 mx-4 -mt-32">
@@ -398,7 +352,7 @@ export default function TabTwoScreen() {
                     isNaN(seatValue) || seatValue > 4 ? 4 : seatValue;
 
                   // Update state hanya jika valid
-                  setSeacrhFlightData((prev) => ({
+                  setSearchFlightData((prev) => ({
                     ...prev,
                     seat: validSeatValue,
                   }));
@@ -441,7 +395,7 @@ export default function TabTwoScreen() {
           contentContainerStyle={{ paddingHorizontal: 20 }}
         />  */}
           <FlatList
-            data={dummyResults}
+            data={ListTransactions}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View

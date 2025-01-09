@@ -23,11 +23,11 @@ export default function HomeScreen() {
     fetchToken();
   }, [token]);
 
-  useEffect(() => {
-    if (token) {
-      return router.push(`/(tabs)`);
-    }
-  }, [token]);
+  // useEffect(() => {
+  //   if (token) {
+  //     return router.push(`/(tabs)`);
+  //   }
+  // }, [token]);
 
   return (
     <SafeAreaView

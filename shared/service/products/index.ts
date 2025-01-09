@@ -2,7 +2,7 @@ import { removeEmptyAttributes } from "shared/utils"
 import QueryString from "qs"
 import api from "../api"
 
-const getProducts = async (activeFilter: any, token: string) => {
+const getProducts = async (activeFilter: any, token: string | null) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )
@@ -14,7 +14,7 @@ const getProducts = async (activeFilter: any, token: string) => {
     })
 }
 
-const getProductById = async (activeFilter: any, token: string, id: string) => {
+const getProductById = async (activeFilter: any, token: string | null, id: string) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )
@@ -74,7 +74,7 @@ const deleteProductById = async(id: string, token: string) => {
     })
 }
 
-export default {
+export {
     getProducts,
     getProductById,
     getProductBySummary,

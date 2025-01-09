@@ -1,12 +1,17 @@
 import { removeEmptyAttributes } from "shared/utils"
-import QueryString from "qs"
 import api from "../api"
+import QueryString from "qs"
 
-const getTransactions = async (activeFilter: any, token: string | null) => {
+
+const postSystems = async (payload: any) => {
+    return api.post(`/Systems`, payload)
+}
+
+const getSystems = async (activeFilter: any, token: string | null) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )
-    return api.get(`/Transactions`, {
+    return api.get(`/Systems`, {
         params: { ...queryString },
         headers: {
             Authorization: `Bearer ${token}`
@@ -14,11 +19,11 @@ const getTransactions = async (activeFilter: any, token: string | null) => {
     })
 }
 
-const getTransactionById = async (activeFilter: any, token: string, id: string) => {
+const getSystemsById = async (activeFilter: any, token: string | null, id: string) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )
-    return api.get(`/Transactions/${id}`, {
+    return api.get(`/Systems/${id}`, {
         params: { ...queryString },
         headers: {
             Authorization: `Bearer ${token}`
@@ -26,11 +31,11 @@ const getTransactionById = async (activeFilter: any, token: string, id: string) 
     })
 }
 
-const getTransactionSummary = async (activeFilter: any, token: string) => {
+const getSystemsBySummary = async (activeFilter: any, token: string | null) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )
-    return api.get(`/Transactions/summary`, {
+    return api.get(`/Systems/summary`, {
         params: { ...queryString },
         headers: {
             Authorization: `Bearer ${token}`
@@ -38,11 +43,11 @@ const getTransactionSummary = async (activeFilter: any, token: string) => {
     })
 }
 
-const getTransactionCount = async (activeFilter: any, token: string) => {
+const getSystemsByCount = async (activeFilter: any, token: string | null) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )
-    return api.get(`/Transactions/count`, {
+    return api.get(`/Systems/count`, {
         params: { ...queryString },
         headers: {
             Authorization: `Bearer ${token}`
@@ -50,24 +55,16 @@ const getTransactionCount = async (activeFilter: any, token: string) => {
     })
 }
 
-const postTransaction = async (payload: any, token: string) => {
-    return api.post(`/Transactions`, payload, {
+const patchSystems = async(payload: any, id: string, token: string) => {
+    return api.patch(`/Systems/${id}`, payload, {
         headers: {
             Authorization: `Bearer ${token}`
         }
     })
 }
 
-const patchTransaction = async(payload: any, id: string, token: string) => {
-    return api.patch(`/Transactions/${id}`, payload, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-}
-
-const deleteTransactionById = async(id: string, token: string) => {
-    return api.delete(`/Transactions/${id}`, {
+const deleteSystems = async(id: string, token: string) => {
+    return api.delete(`/Systems/${id}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -75,11 +72,11 @@ const deleteTransactionById = async(id: string, token: string) => {
 }
 
 export {
-    getTransactions,
-    getTransactionById,
-    getTransactionSummary,
-    getTransactionCount,
-    postTransaction,
-    patchTransaction,
-    deleteTransactionById
+    postSystems,
+    getSystems,
+    getSystemsById,
+    getSystemsBySummary,
+    getSystemsByCount,
+    patchSystems,
+    deleteSystems
 }

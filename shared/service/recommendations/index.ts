@@ -74,7 +74,7 @@ const deleteRecommendationById = async(id: string, token: string) => {
     })
 }
 
-export default {
+export {
     getRecommendations,
     getRecommendationById,
     getRecommendationBySummary,

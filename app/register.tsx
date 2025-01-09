@@ -88,8 +88,6 @@ export default function RegisterScreen() {
         ],
       };
 
-      console.log(payload);
-
       const response = await mutation.mutateAsync(payload);
       Toast.show({
         type: "success",

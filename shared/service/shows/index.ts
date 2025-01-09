@@ -8,11 +8,11 @@ const postShows = async (payload: any) => {
 }
 
 
-const getUserInfo = async (activeFilter: any, token: string | null) => {
+const getShows = async (activeFilter: any, token: string | null) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )
-    return api.get(`/auth/user`, {
+    return api.get(`/Shows`, {
         params: { ...queryString },
         headers: {
             Authorization: `Bearer ${token}`
@@ -20,8 +20,52 @@ const getUserInfo = async (activeFilter: any, token: string | null) => {
     })
 }
 
-const patchUserInfo = async(payload: any, id: string, token: string) => {
-    return api.patch(`/auth/user`, payload, {
+const getShowsById = async (activeFilter: any, token: string | null, id: string) => {
+    const queryString = QueryString.parse(
+        removeEmptyAttributes(activeFilter || "")
+    )
+    return api.get(`/Shows/${id}`, {
+        params: { ...queryString },
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+}
+
+const getShowsBySummary = async (activeFilter: any, token: string | null) => {
+    const queryString = QueryString.parse(
+        removeEmptyAttributes(activeFilter || "")
+    )
+    return api.get(`/Shows/summary`, {
+        params: { ...queryString },
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+}
+
+const getShowsByCount = async (activeFilter: any, token: string | null) => {
+    const queryString = QueryString.parse(
+        removeEmptyAttributes(activeFilter || "")
+    )
+    return api.get(`/Shows/count`, {
+        params: { ...queryString },
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+}
+
+const patchShows = async(payload: any, id: string, token: string) => {
+    return api.patch(`/Shows/${id}`, payload, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+}
+
+const deleteShows = async(id: string, token: string) => {
+    return api.delete(`/Shows/${id}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -29,13 +73,11 @@ const patchUserInfo = async(payload: any, id: string, token: string) => {
 }
 
 export {
-    postLogin,
-    postRegister,
-    postLogout,
-    postVerifyToken,
-    postChangePassword,
-    postForgetPassword,
-    postResetPassword,
-    getUserInfo,
-    patchUserInfo
+    postShows,
+    getShows,
+    getShowsById,
+    getShowsBySummary,
+    getShowsByCount,
+    patchShows,
+    deleteShows
 }

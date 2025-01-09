@@ -1,21 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Image, View, Text } from "react-native";
+import { User } from "shared/lib";
 import { getUserInfo } from "shared/service";
 
 interface Props {
   token: string | null;
 }
 
-const Header = ({ token }: Props) => {
-  const { data, isPending, error } = useQuery({
-    queryKey: ["authUser", token],
-    queryFn: async () => getUserInfo({}, token),
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    retry: false,
-  });
-
+const Header = ({ data }: User | any) => {
   const photo = data?.data?.url?.[0]?.url;
 
   console.log(photo);
@@ -42,7 +34,7 @@ const Header = ({ token }: Props) => {
           </Text>
         </View>
       </View>
-      <View className="w-1/2 flex-row space-x-4 justify-end items-center">
+      {/* <View className="w-1/2 flex-row space-x-4 justify-end items-center">
         <View className="bg-gray-600 rounded-full px-4 flex-row gap-2 items-center">
           <View className="bg-yellow-500 rounded-full w-8 h-8 justify-center items-center">
             <Text className="text-white font-semibold">P</Text>
@@ -52,7 +44,7 @@ const Header = ({ token }: Props) => {
             <Text className="text-white">✈️ 5,231</Text>
           </View>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 };
