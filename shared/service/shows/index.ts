@@ -20,7 +20,7 @@ const getShows = async (activeFilter: any, token: string | null) => {
     })
 }
 
-const getShowsById = async (activeFilter: any, token: string | null, id: string) => {
+const getShowsById = async (activeFilter: any, token: string | null, id: string | any) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )

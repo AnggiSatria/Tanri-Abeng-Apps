@@ -14,7 +14,7 @@ const getProducts = async (activeFilter: any, token: string | null) => {
     })
 }
 
-const getProductById = async (activeFilter: any, token: string | null, id: string) => {
+const getProductById = async (activeFilter: any, token: string | null, id: string | any) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )

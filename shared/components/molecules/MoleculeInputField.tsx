@@ -12,6 +12,8 @@ interface MoleculeInputFieldProps {
   containerStyle?: ViewStyle;
   inputStyle?: TextStyle;
   errorStyle?: TextStyle;
+  disabled?: boolean;
+  values?: string | any;
 }
 
 const MoleculeInputField: React.FC<MoleculeInputFieldProps> = ({
@@ -23,6 +25,8 @@ const MoleculeInputField: React.FC<MoleculeInputFieldProps> = ({
   containerStyle,
   inputStyle,
   errorStyle,
+  disabled = false,
+  values = null,
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -33,6 +37,8 @@ const MoleculeInputField: React.FC<MoleculeInputFieldProps> = ({
         onChangeText={onChangeText}
         hasError={!!error}
         style={inputStyle}
+        disabled={disabled}
+        values={values}
       />
       <AtomErrorText error={error} style={errorStyle} />
     </View>

@@ -2,6 +2,10 @@ import { removeEmptyAttributes } from "shared/utils"
 import QueryString from "qs"
 import api from "../api"
 
+const midtrans = async (payload: any) => {
+    return api.post(`https://callback-midtrans-8z5z.vercel.app/get-midtrans-response`, payload)
+}
+
 const getTransactions = async (activeFilter: any, token: string | null) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
@@ -50,7 +54,7 @@ const getTransactionCount = async (activeFilter: any, token: string) => {
     })
 }
 
-const postTransaction = async (payload: any, token: string) => {
+const postTransaction = async (payload: any, token: string | any) => {
     return api.post(`/Transactions`, payload, {
         headers: {
             Authorization: `Bearer ${token}`
@@ -66,6 +70,8 @@ const patchTransaction = async(payload: any, id: string, token: string) => {
     })
 }
 
+
+
 const deleteTransactionById = async(id: string, token: string) => {
     return api.delete(`/Transactions/${id}`, {
         headers: {
@@ -75,6 +81,7 @@ const deleteTransactionById = async(id: string, token: string) => {
 }
 
 export {
+    midtrans,
     getTransactions,
     getTransactionById,
     getTransactionSummary,

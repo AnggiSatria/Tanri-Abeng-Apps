@@ -1,62 +1,122 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, Pressable } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQuery } from "@tanstack/react-query";
+import { getProductById, getShowsById } from "shared/service";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+
+dayjs.extend(localizedFormat);
 
 interface Match {
-  id: string;
-  matchDay: string;
-  matchDate: string;
-  matchTime: string;
-  teams: string;
-  venue: string;
-  category: string;
-  duration: string;
+  product?: {
+    category: string;
+    createdAt: string;
+    price: number;
+    qty: string;
+    showId: string;
+    updatedAt: string;
+    _id: string;
+  };
+  show?: {
+    _id: string;
+    away: string;
+    createdAt: string;
+    date: string;
+    home: string;
+    location: string;
+    times: string;
+    updatedAt: string;
+    url: any[];
+  };
 }
 
 const MatchDetails: React.FC = () => {
-  const matches: Match[] = [
-    {
-      id: "1",
-      matchDay: "Sunday",
-      matchDate: "Jan 15",
-      matchTime: "7:00 PM",
-      teams: "Team A vs Team B",
-      venue: "National Stadium",
-      category: "VIP",
-      duration: "90 mins",
-    },
-  ];
+  const { id } = useGlobalSearchParams();
 
-  const renderItem = ({ item }: { item: Match }) => (
-    <View className="bg-white mx-4 my-2 rounded-lg p-4 shadow-sm">
-      {/* Match Details */}
-      <View className="flex-row items-center">
-        <Text className="text-sm text-gray-500 font-semibold">
-          {item.matchDay}
+  console.log(id);
+
+  const [token, setToken] = useState<string | null>(null);
+  const [dataDetails, setDataDetails] = useState<any>([]);
+  console.log(dataDetails);
+
+  // Ambil token
+  useEffect(() => {
+    const fetchToken = async () => {
+      const authToken = await AsyncStorage.getItem("userToken");
+      setToken(authToken || null);
+    };
+    fetchToken();
+  }, []);
+
+  // Ambil data produk
+  const {
+    data: productsData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["product-by-id", token, id],
+    queryFn: async () => getProductById({}, token, id),
+    enabled: !!token && !!id,
+    refetchOnWindowFocus: false,
+  });
+
+  // Ambil data produk
+  const {
+    data: showData,
+    isLoading: loadingShow,
+    error: errorShow,
+  } = useQuery({
+    queryKey: ["show-by-id", token, productsData],
+    queryFn: async () => getShowsById({}, token, productsData?.data?.showId),
+    enabled: !!token && !!productsData,
+    refetchOnWindowFocus: false,
+  });
+
+  const product = productsData?.data;
+  const show = showData?.data;
+
+  useEffect(() => {
+    if (showData) {
+      setDataDetails([{ product, show }]);
+    }
+  }, [showData]);
+
+  const renderItem = ({ item }: { item: Match }) => {
+    console.log(item);
+
+    return (
+      <View className="bg-white mx-4 my-2 rounded-lg p-4 shadow-sm">
+        {/* Match Details */}
+        <View className="flex-row items-center">
+          <Text className="text-sm text-gray-500 font-semibold">
+            {item?.show?.date}
+          </Text>
+          <Text className="text-sm text-gray-500 ml-1">
+            , {dayjs(item?.show?.times).format("LT")}
+          </Text>
+        </View>
+        <View className="flex-row items-center mt-1">
+          <MaterialCommunityIcons name="soccer" size={20} color="green" />
+          <Text className="text-lg font-bold text-black ml-2">
+            {dayjs(item?.show?.times).format("LT")}
+          </Text>
+        </View>
+        <Text className="text-lg font-bold mt-2">
+          {item?.show?.home} vs {item?.show?.away}
         </Text>
-        <Text className="text-sm text-gray-500 ml-1">
-          , {item.matchDate}
+        <Text className="text-sm text-gray-500 mt-1">
+          Venue: {item?.show?.location}
         </Text>
+        <Text className="text-sm text-gray-500 mt-1">
+          Category: {item?.product?.category}
+        </Text>
+        <Text className="text-sm text-gray-500 mt-1">Duration: 90 mins</Text>
       </View>
-      <View className="flex-row items-center mt-1">
-        <MaterialCommunityIcons name="soccer" size={20} color="green" />
-        <Text className="text-lg font-bold text-black ml-2">
-          {item.matchTime}
-        </Text>
-      </View>
-      <Text className="text-lg font-bold mt-2">{item.teams}</Text>
-      <Text className="text-sm text-gray-500 mt-1">
-        Venue: {item.venue}
-      </Text>
-      <Text className="text-sm text-gray-500 mt-1">
-        Category: {item.category}
-      </Text>
-      <Text className="text-sm text-gray-500 mt-1">
-        Duration: {item.duration}
-      </Text>
-    </View>
-  );
+    );
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("id-ID", {
@@ -92,14 +152,14 @@ const MatchDetails: React.FC = () => {
           {/* Match Title */}
           <View className="flex-row mx-auto mt-3 justify-center items-center px-8">
             <Text className="text-lg font-bold text-white">
-              Team A vs Team B
+              {`${showData?.data?.home} vs ${showData?.data?.away}`}
             </Text>
           </View>
           <View className="flex-row mx-auto mt-3 justify-between items-center px-6 py-2 bg-white rounded-lg">
             {/* Date */}
             <View className="flex items-center">
               <Text className="text-sm font-semibold text-black">
-                2025-01-15
+                {showData?.data?.date}
               </Text>
             </View>
             {/* Dot */}
@@ -108,7 +168,9 @@ const MatchDetails: React.FC = () => {
             </View>
             {/* Category */}
             <View className="flex items-center">
-              <Text className="text-sm font-semibold text-black">VIP</Text>
+              <Text className="text-sm font-semibold text-black">
+                {productsData?.data?.category}
+              </Text>
             </View>
           </View>
         </View>
@@ -120,8 +182,8 @@ const MatchDetails: React.FC = () => {
         </View>
         <View>
           <FlatList
-            data={matches}
-            keyExtractor={(item) => item.id}
+            data={dataDetails}
+            keyExtractor={(item: any) => item?.product?.id}
             renderItem={renderItem}
             contentContainerStyle={{ paddingBottom: 20 }}
           />
@@ -134,10 +196,12 @@ const MatchDetails: React.FC = () => {
           <View className="w-full bg-[#192031] p-4 mt-5">
             <View className="flex-row items-center justify-between px-4">
               <Text className="text-white font-extrabold text-lg">
-                {formatCurrency(150000)} {/* Total price in IDR */}
+                {formatCurrency(product?.price)} {/* Total price in IDR */}
               </Text>
               <Pressable
-                onPress={() => router.push("/formuser")}
+                onPress={() =>
+                  router.push(`/formuser?productId=${product?._id}`)
+                }
                 className="bg-[#12B3A8] w-1/2 rounded-md justify-center items-center p-2"
               >
                 <Text className="text-white text-lg font-semibold">

@@ -29,14 +29,16 @@ type FormData = {
   password: string;
   phoneNumber: string;
   url: string[]; // URL is now an array of strings
+  countryCode?: any;
+  phoneUser?: string;
 };
 
 export default function RegisterScreen() {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const { control, handleSubmit } = useForm<FormData>();
+  const { control, handleSubmit, setValue } = useForm<FormData>();
 
   const mutation = useMutation({
-    mutationFn: async (payload) => postRegister(payload),
+    mutationFn: async (payload: any) => postRegister(payload),
     mutationKey: ["register"],
   });
 
@@ -82,7 +84,8 @@ export default function RegisterScreen() {
       const payload = {
         ...data,
         fullName: `${data?.firstName} ${data?.lastName}`,
-        phoneNumber: ``,
+        phoneNumber: `${data?.countryCode?.callingCode}${data?.phoneUser}`,
+        countryCode: data?.countryCode?.callingCode,
         url: [
           {
             fileName: "image.png",
@@ -90,6 +93,8 @@ export default function RegisterScreen() {
           },
         ],
       };
+
+      console.log(payload);
 
       const response = await mutation.mutateAsync(payload);
       Toast.show({
@@ -166,8 +171,10 @@ export default function RegisterScreen() {
             rules={{ required: "Phone Number is required" }}
             name="phoneNumber"
             placeholder="Enter your phone number"
-            onChangePhoneNumber={(params) => console.log(params)}
-            onChangeSelectedCountry={(params) => console.log(params)}
+            onChangePhoneNumber={(params) => setValue(`phoneUser`, params)}
+            onChangeSelectedCountry={(params) =>
+              setValue(`countryCode`, params)
+            }
           />
         </Animated.View>
 

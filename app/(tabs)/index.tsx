@@ -196,15 +196,6 @@ export default function TabTwoScreen() {
     fetchToken();
   }, [token]);
 
-  // useEffect(() => {
-  //   const removeItem = async () => {
-  //     const authToken = await AsyncStorage.removeItem("userToken");
-
-  //   };
-
-  //   removeItem();
-  // }, [token]);
-
   const {
     data: dataUser,
     isPending: isPendingUser,
@@ -255,7 +246,7 @@ export default function TabTwoScreen() {
 
   const ListTransactions = dataTransactions?.data;
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     const searchQuery = {
       originCity: searchFlightData.originCity,
       destinationCity: searchFlightData.destinationCity,
@@ -267,6 +258,7 @@ export default function TabTwoScreen() {
     const queryString = new URLSearchParams(searchQuery).toString();
 
     // Navigate to /searchResult dengan query parameters
+
     router.push(`/searchResult?${queryString}`);
   };
 

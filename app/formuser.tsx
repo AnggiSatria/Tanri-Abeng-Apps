@@ -1,141 +1,178 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Pressable, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, Pressable, Alert, Linking } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import RNPickerSelect from 'react-native-picker-select'; // Import the picker component
+import { router, useGlobalSearchParams } from "expo-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SubmitHandler, useForm } from "react-hook-form";
+import OrganismControlledInput from "shared/components/organisms/ControlledInput";
+import {
+  getProductById,
+  getUserInfo,
+  midtrans,
+  postTransaction,
+} from "shared/service";
+
+type FormData = {
+  fullName?: string;
+  userId?: string;
+  productId?: string;
+  status?: string;
+  paymentStatus?: string;
+  qty?: number;
+  email?: string;
+  phoneNumber?: string;
+};
 
 const FormUser: React.FC = () => {
-  // State variables for form inputs
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [seatCount, setSeatCount] = useState("1");
-  const [classType, setClassType] = useState("Economy");
-  const [dob, setDob] = useState(new Date()); // Initial date set to current date
-  const [openDatePicker, setOpenDatePicker] = useState(false); // To control visibility of date picker
+  const { productId } = useGlobalSearchParams();
+  const { control, handleSubmit, setValue } = useForm<FormData>();
+  const [token, setToken] = useState<string | null>(null);
 
-  // Handle form submission
-  const handleSubmit = () => {
-    // Example validation
-    if (!name || !email) {
-      Alert.alert("Error", "Please fill in all required fields.");
+  useEffect(() => {
+    const fetchToken = async () => {
+      const authToken = await AsyncStorage.getItem("userToken");
+      setToken(authToken);
+    };
+    fetchToken();
+  }, []);
+
+  const { data: dataUser } = useQuery({
+    queryKey: ["authUser", token],
+    queryFn: () => getUserInfo({}, token),
+    enabled: !!token,
+  });
+
+  const { data: productsData } = useQuery({
+    queryKey: ["product-by-id", token, productId],
+    queryFn: () => getProductById({}, token, productId),
+    enabled: !!token && !!productId,
+  });
+
+  useEffect(() => {
+    if (dataUser && productsData) {
+      setValue("fullName", dataUser?.data?.fullName);
+      setValue("productId", productsData?.data._id);
+      setValue("userId", dataUser?.data?._id);
+      setValue("paymentStatus", "unpaid");
+      setValue("status", "Pending");
+      setValue("email", dataUser?.data?.email);
+      setValue("phoneNumber", dataUser?.data?.phoneNumber);
+    }
+  }, [dataUser, productsData, setValue]);
+
+  const mutation = useMutation({
+    mutationFn: (payload: any) => postTransaction(payload, token),
+    mutationKey: ["post-transactions"],
+  });
+
+  const mutationMidtrans = useMutation({
+    mutationFn: (payload: any) => midtrans(payload),
+    mutationKey: ["post-midtrans"],
+  });
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    if (!data.productId || !data.userId) {
+      Alert.alert("Error", "Product and User information are required!");
       return;
     }
 
-    // On successful submission, navigate to the next page or show confirmation
-    Alert.alert("Success", `Booking details for ${name} submitted.`);
-    // Redirect to another screen or further action here
-    router.push("/(tabs)");
+    const payloadTransactions = {
+      productId: data.productId || productsData?.data._id,
+      userId: data.userId,
+      status: data.status || "Pending",
+      paymentStatus: data.paymentStatus || "unpaid",
+      qty: Number(data.qty),
+    };
+
+    try {
+      const responseTransactions = await mutation.mutateAsync(
+        payloadTransactions
+      );
+
+      const payloadMidtrans = {
+        id: responseTransactions?.data._id,
+        userId: data?.userId,
+        productId: data?.productId || productsData?.data._id,
+        status: data?.status || "Pending",
+        paymentStatus: data?.paymentStatus || "unpaid",
+        qty: Number(data?.qty),
+        productPrice: productsData?.data.price,
+        customerDetails: {
+          first_name: dataUser?.data.firstName,
+          last_name: dataUser?.data.lastName,
+          email: dataUser?.data.email,
+          phone: data?.phoneNumber || "+6221890213412",
+        },
+      };
+
+      const responseMidtrans = await mutationMidtrans.mutateAsync(
+        payloadMidtrans
+      );
+
+      const paymentUrl = responseMidtrans?.data?.redirectUrl;
+
+      if (paymentUrl) {
+        // Open the payment URL in the device's default browser
+        Linking.openURL(paymentUrl);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert("Error", "An error occurred while processing the payment.");
+    }
   };
 
   return (
     <View className="flex-1 bg-[#F5F7FA]">
       <View className="w-full bg-[#192031] pt-16 pb-8 rounded-b-lg">
-        {/* Header */}
         <View className="flex-row items-center justify-between px-4">
           <Pressable onPress={() => router.back()}>
-            <View className="rounded-full bg-gray-500 p-2">
-              <MaterialIcons name="keyboard-arrow-left" size={24} color="white" />
-            </View>
+            <MaterialIcons name="keyboard-arrow-left" size={24} color="white" />
           </Pressable>
-          <Text className="text-white font-extrabold text-lg">User Details</Text>
-          <MaterialCommunityIcons name="dots-horizontal" size={30} color="white" />
+          <Text className="text-white font-extrabold text-lg">
+            User Details
+          </Text>
+          <MaterialCommunityIcons
+            name="dots-horizontal"
+            size={30}
+            color="white"
+          />
         </View>
       </View>
 
       <View className="mx-6 mt-4">
         <Text className="text-lg font-bold text-black">Enter Your Details</Text>
 
-        {/* Name Input */}
-        <Text className="text-sm text-gray-600 mt-4">Full Name</Text>
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="Enter your full name"
-          style={{
-            borderColor: "#ccc",
-            borderWidth: 1,
-            borderRadius: 8,
-            padding: 10,
-            marginBottom: 12,
-            backgroundColor: "white",
-          }}
+        <OrganismControlledInput
+          control={control}
+          name="fullName"
+          rules={{ required: "Full Name is required" }}
+          placeholder="Enter your Full Name"
         />
 
-        {/* Email Input */}
-        <Text className="text-sm text-gray-600">Email Address</Text>
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Enter your email"
-          keyboardType="email-address"
-          style={{
-            borderColor: "#ccc",
-            borderWidth: 1,
-            borderRadius: 8,
-            padding: 10,
-            marginBottom: 12,
-            backgroundColor: "white",
-          }}
+        <OrganismControlledInput
+          control={control}
+          name="email"
+          rules={{ required: "Email is required" }}
+          placeholder="Enter your Email"
         />
 
-        {/* Seat Count Input */}
-        <Text className="text-sm text-gray-600">Seat Count</Text>
-        <TextInput
-          value={seatCount}
-          onChangeText={setSeatCount}
-          keyboardType="numeric"
-          style={{
-            borderColor: "#ccc",
-            borderWidth: 1,
-            borderRadius: 8,
-            padding: 10,
-            marginBottom: 12,
-            backgroundColor: "white",
-          }}
+        <OrganismControlledInput
+          control={control}
+          name="qty"
+          rules={{ required: "Seat count is required" }}
+          placeholder="Enter your Seat Count"
         />
-
-        {/* Date of Birth Picker */}
-        <Text className="text-sm text-gray-600 mt-4">Date of Birth</Text>
-        <Pressable
-          onPress={() => setOpenDatePicker(true)}
-          style={{
-            borderColor: "#ccc",
-            borderWidth: 1,
-            borderRadius: 8,
-            padding: 10,
-            marginBottom: 12,
-            backgroundColor: "white",
-          }}
-        >
-          <Text className="text-sm text-gray-600">
-            {dob.toLocaleDateString()} {/* Display the selected date */}
-          </Text>
-        </Pressable>
-
-        {/* Date Picker Modal */}
-        {openDatePicker && (
-          <DateTimePicker
-            value={dob}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => {
-              if (selectedDate) {
-                setDob(selectedDate); // Set the selected date
-              }
-              setOpenDatePicker(false); // Close the date picker modal
-            }}
-          />
-        )}
       </View>
 
-      {/* Submit Button */}
       <View className="mx-6 mt-6">
         <Pressable
-          onPress={handleSubmit}
-          className="bg-[#12B3A8] w-full rounded-md justify-center items-center p-3"
+          onPress={handleSubmit(onSubmit)}
+          className="bg-[#12B3A8] w-full rounded-md p-3"
         >
-          <Text className="text-white text-lg font-semibold">Submit Booking</Text>
+          <Text className="text-white text-lg font-semibold text-center">
+            Submit Booking
+          </Text>
         </Pressable>
       </View>
     </View>

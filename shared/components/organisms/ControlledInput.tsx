@@ -12,6 +12,8 @@ interface OrganismControlledInputProps {
     inputStyle?: object;
     errorStyle?: object;
   };
+  disabled?: boolean;
+  values?: string | any;
 }
 
 const OrganismControlledInput: React.FC<OrganismControlledInputProps> = ({
@@ -20,6 +22,8 @@ const OrganismControlledInput: React.FC<OrganismControlledInputProps> = ({
   rules,
   placeholder,
   customStyles,
+  disabled = false,
+  values = null,
 }) => {
   return (
     <Controller
@@ -32,13 +36,14 @@ const OrganismControlledInput: React.FC<OrganismControlledInputProps> = ({
       }) => (
         <MoleculeInputField
           placeholder={placeholder}
-          value={value}
+          value={values || value}
           onBlur={onBlur}
           onChangeText={onChange}
           error={error?.message}
           containerStyle={customStyles?.containerStyle}
           inputStyle={customStyles?.inputStyle}
           errorStyle={customStyles?.errorStyle}
+          disabled={disabled}
         />
       )}
     />
