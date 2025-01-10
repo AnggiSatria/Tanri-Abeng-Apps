@@ -384,10 +384,7 @@ export default function TabTwoScreen() {
             <Text className="text-lg font-semibold text-black">
               Archive Tiket
             </Text>
-            <Pressable
-              className="flex-row justify-center items-center gap-2"
-              onPress={() => {}}
-            >
+            <Pressable className="flex-row justify-center items-center gap-2">
               <Text className="text-sm font-semibold text-black">see more</Text>
             </Pressable>
           </View>
@@ -402,58 +399,64 @@ export default function TabTwoScreen() {
             data={ListTransactions}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View
-                style={{
-                  width: "100%", // Menggunakan lebar penuh untuk elemen vertikal
-                  marginVertical: 10, // Memberikan jarak vertikal antar item
-                  padding: 10,
-                  backgroundColor: "#ffffff", // Mengubah warna latar belakang menjadi putih
-                  borderRadius: 8,
+              <Pressable
+                onPress={() => {
+                  router.push("/ticketDetail");
                 }}
               >
-                <View className="flex justify-between">
-                  <Text style={{ fontWeight: "bold" }}>
-                    {item.homeTeam} vs {item.awayTeam}
-                  </Text>
-                  <Text>{item.seat} </Text>
-                  <Text>
-                    {item.matchDate} at {item.matchTime}
-                  </Text>
-                  <Text>{item.venue}</Text>
-                  <Text>{item.class}</Text>
+                <View
+                  style={{
+                    width: "100%", // Menggunakan lebar penuh untuk elemen vertikal
+                    marginVertical: 10, // Memberikan jarak vertikal antar item
+                    padding: 10,
+                    backgroundColor: "#ffffff", // Mengubah warna latar belakang menjadi putih
+                    borderRadius: 8,
+                  }}
+                >
+                  <View className="flex justify-between">
+                    <Text style={{ fontWeight: "bold" }}>
+                      {item.homeTeam} vs {item.awayTeam}
+                    </Text>
+                    <Text>{item.seat} </Text>
+                    <Text>
+                      {item.matchDate} at {item.matchTime}
+                    </Text>
+                    <Text>{item.venue}</Text>
+                    <Text>{item.class}</Text>
 
-                  <View
-                    style={{
-                      backgroundColor:
-                        item.ticketAvailability === "Cancel"
-                          ? "red"
-                          : item.ticketAvailability === "Pending"
-                          ? "#ffd32c"
-                          : item.ticketAvailability === "Lunas"
-                          ? "green"
-                          : "black", // Default warna jika status tidak ditemukan
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      borderRadius: 15, // Membuat bentuk melengkung
-                      alignSelf: "flex-start", // Agar badge berada di sisi kiri
-                      marginTop: 5,
-                    }}
-                  >
-                    <Text
+                    <View
                       style={{
-                        color: "#f5f5f5",
-                        fontWeight: "bold",
+                        backgroundColor:
+                          item.ticketAvailability === "Cancel"
+                            ? "red"
+                            : item.ticketAvailability === "Pending"
+                            ? "#ffd32c"
+                            : item.ticketAvailability === "Lunas"
+                            ? "green"
+                            : "black", // Default warna jika status tidak ditemukan
+                        paddingVertical: 5,
+                        paddingHorizontal: 10,
+                        borderRadius: 15, // Membuat bentuk melengkung
+                        alignSelf: "flex-start", // Agar badge berada di sisi kiri
+                        marginTop: 5,
                       }}
                     >
-                      {item.ticketAvailability}
+                      <Text
+                        style={{
+                          color: "#f5f5f5",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {item.ticketAvailability}
+                      </Text>
+                    </View>
+
+                    <Text style={{ fontWeight: "bold" }}>
+                      Price: {item.price}
                     </Text>
                   </View>
-
-                  <Text style={{ fontWeight: "bold" }}>
-                    Price: {item.price}
-                  </Text>
                 </View>
-              </View>
+              </Pressable>
             )}
             contentContainerStyle={{ paddingBottom: 20 }}
           />
