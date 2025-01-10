@@ -160,8 +160,13 @@ const FormUser: React.FC = () => {
         <OrganismControlledInput
           control={control}
           name="qty"
-          rules={{ required: "Seat count is required" }}
-          placeholder="Enter your Seat Count"
+          rules={{
+            required: "Seat count is required",
+            min: { value: 1, message: "Minimum 1 seat required" },
+            max: { value: 4, message: "Maximum 4 seats allowed" }
+          }}          placeholder="Enter your Seat Count"
+          keyboardType="numeric"
+          maxLength={4}
         />
       </View>
 

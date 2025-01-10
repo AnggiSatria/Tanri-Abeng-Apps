@@ -119,7 +119,7 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#192031", flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: "black", flex: 1 }}>
       <Toast />
       <StatusBar style="light" />
 
@@ -128,11 +128,11 @@ export default function RegisterScreen() {
         entering={FadeInDown.duration(400).springify()}
         style={{ alignItems: "center", marginTop: 12 }}
       >
-        <Text style={styles.title}>Create Account</Text>
+        <Text className="mt-5" style={styles.title}>Create Account</Text>
       </Animated.View>
 
       {/* Form */}
-      <View style={{ flex: 1, alignItems: "center", paddingHorizontal: 24 }}>
+      <View style={{ flex: 1, alignItems: "center", paddingHorizontal: 15 }}>
         <Animated.View
           entering={FadeInUp.duration(600).delay(300).springify()}
           style={{ width: "100%", marginTop: 20, gap: 16 }}
@@ -230,7 +230,7 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
   title: {
-    color: "#FFFFFF",
+    color: "#F1F1F1",
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
@@ -257,23 +257,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   registerButton: {
-    backgroundColor: "#12B3A8",
+    backgroundColor: "#FFC90D",
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 16,
   },
   registerText: {
-    color: "#FFFFFF",
+    color: "#000000",
     fontSize: 18,
     fontWeight: "bold",
   },
   footerText: {
-    color: "#A0AEC0",
+    color: "#F1F1F1",
     fontSize: 14,
   },
   loginLink: {
-    color: "#12B3A8",
+    color: "#FFC90D",
     fontSize: 14,
     fontWeight: "bold",
     paddingLeft: 4,

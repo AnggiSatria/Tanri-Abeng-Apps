@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { View, StyleSheet, ViewStyle, TextStyle, KeyboardTypeOptions } from "react-native";
 import AtomTextInput from "../atoms/AtomTextInput";
 import AtomErrorText from "../atoms/AtomErrorText";
 
@@ -14,6 +14,8 @@ interface MoleculeInputFieldProps {
   errorStyle?: TextStyle;
   disabled?: boolean;
   values?: string | any;
+  keyboardType?: KeyboardTypeOptions;
+  maxLength?: number
 }
 
 const MoleculeInputField: React.FC<MoleculeInputFieldProps> = ({
@@ -27,6 +29,8 @@ const MoleculeInputField: React.FC<MoleculeInputFieldProps> = ({
   errorStyle,
   disabled = false,
   values = null,
+   keyboardType = "default",
+   maxLength
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -39,6 +43,8 @@ const MoleculeInputField: React.FC<MoleculeInputFieldProps> = ({
         style={inputStyle}
         disabled={disabled}
         values={values}
+        keyboardType={keyboardType}
+        maxLength={maxLength}
       />
       <AtomErrorText error={error} style={errorStyle} />
     </View>

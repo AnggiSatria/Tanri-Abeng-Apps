@@ -43,6 +43,8 @@ export default function RootLayout() {
           <Stack.Screen name="destination" options={{ headerShown: false }} />
           <Stack.Screen name="departuredate" options={{ headerShown: false }} />
           <Stack.Screen name="searchResult" options={{ headerShown: false }} />
+          <Stack.Screen name="flightdetail" options={{ headerShown: false }} />
+          <Stack.Screen name="formuser" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />

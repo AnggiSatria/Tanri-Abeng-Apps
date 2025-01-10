@@ -1,6 +1,7 @@
 import React from "react";
 import { Control, Controller } from "react-hook-form";
 import MoleculeInputField from "../molecules/MoleculeInputField";
+import { KeyboardTypeOptions } from "react-native"; // Import tipe keyboard
 
 interface OrganismControlledInputProps {
   control: Control<any>;
@@ -14,6 +15,8 @@ interface OrganismControlledInputProps {
   };
   disabled?: boolean;
   values?: string | any;
+  keyboardType?: KeyboardTypeOptions;
+  maxLength?: number
 }
 
 const OrganismControlledInput: React.FC<OrganismControlledInputProps> = ({
@@ -22,8 +25,10 @@ const OrganismControlledInput: React.FC<OrganismControlledInputProps> = ({
   rules,
   placeholder,
   customStyles,
+  keyboardType = "default",
   disabled = false,
   values = null,
+  maxLength
 }) => {
   return (
     <Controller
@@ -44,6 +49,8 @@ const OrganismControlledInput: React.FC<OrganismControlledInputProps> = ({
           inputStyle={customStyles?.inputStyle}
           errorStyle={customStyles?.errorStyle}
           disabled={disabled}
+          keyboardType={keyboardType}
+          maxLength={maxLength} 
         />
       )}
     />

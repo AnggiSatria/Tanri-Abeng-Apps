@@ -33,7 +33,7 @@ export default function HomeScreen() {
     <SafeAreaView
       className="flex-1"
       style={{
-        backgroundColor: "#192031",
+        backgroundColor: "black",
       }}
     >
       <StatusBar style="light" />
@@ -48,17 +48,18 @@ export default function HomeScreen() {
             entering={FadeInDown.duration(200).springify()}
             className="flex-row justify-center items-center pb-5"
           >
-            <MaterialCommunityIcons name="ticket" size={24} color="#12B3A8" />
-            <Text className="text-[#FFFFFF] text-xl font-light leading-[60px] pl-1"></Text>
-            <Text className="text-[#12B3A8] text-xl leading-[60px] pl-1 italic">
+            {/* <MaterialCommunityIcons name="ticket" size={24} color="#12B3A8" /> */}
+            {/* <Text className="text-[#FFFFFF] text-xl font-light leading-[60px] pl-1"></Text>
+            <Text className="text-[#FFC90D] text-xl leading-[60px] pl-1 italic">
               Ticket ID
-            </Text>
+            </Text> */}
           </Animated.View>
           <Animated.View
             entering={FadeInRight.duration(600).delay(600).springify()}
+            className="mt-14"
           >
             <Image
-              source={require("assets/images/air-plane-image.png")}
+              source={require("assets/images/soccer-logo.png")}
               style={styles.airplaneImage}
             />
           </Animated.View>
@@ -66,7 +67,7 @@ export default function HomeScreen() {
             entering={FadeInDown.duration(200).delay(200).springify()}
             className="mt-16"
           >
-            <Text className="text-[#FFFFFF] text-[32px] font-medium leading-[40px] text-center">
+            <Text className="text-[#F1F1F1] text-[32px] font-medium leading-[40px] text-center">
               The Best Solution for Booking Tickets with a Smart System!
             </Text>
           </Animated.View>
@@ -86,9 +87,9 @@ export default function HomeScreen() {
           >
             <Pressable
               onPress={() => router.push("/login")}
-              className="bg-[#12B3A8] rounded-full justify-center items-center py-3"
+              className="bg-[#FFC90D] rounded-full justify-center items-center py-3"
             >
-              <Text className="text-white font-bold text-lg">
+              <Text className="text-black font-bold text-lg">
                 Discover our feature
               </Text>
             </Pressable>
@@ -98,7 +99,7 @@ export default function HomeScreen() {
               </Text>
               <Text
                 onPress={() => router.push("/register")}
-                className="text-white font-semibold text-sm leading-[38px] text-center"
+                className="text-[#FFC90D] font-semibold text-sm leading-[38px] text-center"
               >
                 Register
               </Text>

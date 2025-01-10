@@ -30,7 +30,7 @@ const AtomButtonContainer: React.FC<AtomButtonContainerProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#FFC90D",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,

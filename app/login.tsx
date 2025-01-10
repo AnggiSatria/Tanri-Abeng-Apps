@@ -77,7 +77,7 @@ export default function LoginScreen() {
     <SafeAreaView
       className="flex-1"
       style={{
-        backgroundColor: "#192031",
+        backgroundColor: "black",
       }}
     >
       <Toast />
@@ -86,13 +86,13 @@ export default function LoginScreen() {
 
       <Animated.View
         entering={FadeInDown.duration(200).springify()}
-        className="flex-row justify-center items-center pb-5"
+        className="flex-row justify-center items-center mt-10 pb-5"
       >
-        <MaterialCommunityIcons name="ticket" size={24} color="#12B3A8" />
+        {/* <MaterialCommunityIcons name="ticket" size={24} color="#12B3A8" />
         <Text className="text-[#FFFFFF] text-xl font-light leading-[60px] pl-1"></Text>
         <Text className="text-[#12B3A8] text-xl leading-[60px] pl-1 italic">
           Ticket ID
-        </Text>
+        </Text> */}
       </Animated.View>
       <View className="flex-1 items-center px-6 mt-6">
         {/* Judul Halaman */}
@@ -175,7 +175,7 @@ export default function LoginScreen() {
             Don't have an account?
           </Text>
           <Pressable onPress={() => router.push("/register")}>
-            <Text className="text-[#12B3A8] font-bold text-sm leading-[38px] pl-2">
+            <Text className="text-[#FFC90D] font-bold text-sm leading-[38px] pl-2">
               Register
             </Text>
           </Pressable>
@@ -197,5 +197,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
+    color: "black",
   },
 });
