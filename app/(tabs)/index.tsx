@@ -23,13 +23,14 @@ import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 // import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getProductById,
   getProducts,
   getShowsById,
   getTransactions,
   getUserInfo,
+  postLogout,
 } from "shared/service";
 import { User } from "shared/lib";
 import { getItem } from "shared/utils/getStorage";
@@ -254,10 +255,6 @@ export default function TabTwoScreen() {
     enabled: !!token && !!AuthUser,
   });
 
-  const ListTransactions = dataTransactions?.data;
-
-  console.log(combinedData);
-
   // useEffect(() => {
   //   const fetchAndCombineData = async () => {
   //     if (dataTransactions?.data) {
@@ -370,6 +367,31 @@ export default function TabTwoScreen() {
     setPageNavigation(type);
   };
 
+  const mutation = useMutation({
+    mutationFn: async (payload: any) => postLogout(payload, token),
+    mutationKey: ["register"],
+  });
+
+  const removeItem = async (key: any) => {
+    try {
+      await AsyncStorage.removeItem(key);
+      console.log(`${key} removed successfully`);
+    } catch (error) {
+      console.error(`Failed to remove`);
+    }
+  };
+
+  const onLogoutUser = async () => {
+    const response = await mutation.mutateAsync({});
+    console.log(`test logout 123`, response.status);
+
+    if (response?.status === 200) {
+      console.log(`gurih nih`);
+      removeItem(`userToken`);
+      router.navigate(`/(tabs)`);
+    }
+  };
+
   return (
     <ScrollView className="flex-1 bg-[#F5F7FA]">
       <View className="flex-1 items-center relative bg-[#F5F7FA]">
@@ -387,7 +409,7 @@ export default function TabTwoScreen() {
           className="h-64 mb-4 justify-start border-orange-600 w-full bg-[#192031] relative pt-16"
           style={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }}
         >
-          <Header data={AuthUser} />
+          <Header data={AuthUser} onLogout={onLogoutUser} />
         </View>
         {/* Form Area */}
         <View className="w-full px-4 mx-4 -mt-32">
@@ -489,7 +511,9 @@ export default function TabTwoScreen() {
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => {
-                  router.push("/ticketDetail");
+                  router.push(
+                    `/ticketDetail?transactionId=${item?.transaction?._id}&productId=${item?.product?._id}&showId=${item?.show?._id}`
+                  );
                 }}
               >
                 <View

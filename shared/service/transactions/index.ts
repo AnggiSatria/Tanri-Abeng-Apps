@@ -18,7 +18,7 @@ const getTransactions = async (activeFilter: any, token: string | null) => {
     })
 }
 
-const getTransactionById = async (activeFilter: any, token: string, id: string) => {
+const getTransactionById = async (activeFilter: any, token: string | null, id: string | any) => {
     const queryString = QueryString.parse(
         removeEmptyAttributes(activeFilter || "")
     )

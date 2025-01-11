@@ -11,39 +11,6 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 dayjs.extend(localizedFormat);
 
 const SearchResults = () => {
-  const dummyResults = [
-    {
-      id: "1",
-      homeTeam: "Barcelona",
-      awayTeam: "Real Madrid",
-      matchDate: "2024-07-30",
-      matchTime: "20:00",
-      venue: "Camp Nou",
-      ticketAvailability: "Available",
-      price: "IDR 500,000",
-    },
-    {
-      id: "2",
-      homeTeam: "Manchester United",
-      awayTeam: "Chelsea",
-      matchDate: "2024-08-10",
-      matchTime: "22:00",
-      venue: "Old Trafford",
-      ticketAvailability: "Sold Out",
-      price: "IDR 750,000",
-    },
-    {
-      id: "3",
-      homeTeam: "Juventus",
-      awayTeam: "AC Milan",
-      matchDate: "2024-09-05",
-      matchTime: "18:00",
-      venue: "Allianz Stadium",
-      ticketAvailability: "Pending",
-      price: "IDR 300,000",
-    },
-  ];
-
   const [token, setToken] = useState<string | null>(null);
   const [combinedData, setCombinedData] = useState<any[]>([]);
 

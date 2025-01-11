@@ -3,27 +3,37 @@ import { useQuery } from "@tanstack/react-query";
 import { Image, View, Text, TouchableOpacity, Alert } from "react-native";
 import { User } from "shared/lib";
 import { getUserInfo } from "shared/service";
+import { Platform } from "react-native";
 
 interface Props {
-  token: string | null;
-  onLogout: () => void; // Fungsi logout diterima dari props
+  onLogout: () => void;
+  data?: User | any;
 }
 
-const Header = ({ data, onLogout }: User | any) => {
+const Header = ({ data, onLogout }: Props) => {
+  console.log(`test`, data);
+
   const photo = data?.data?.url?.[0]?.url;
 
   console.log(photo);
 
   const handleLogout = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to log out?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Logout", onPress: onLogout },
-      ],
-      { cancelable: true }
-    );
+    if (Platform.OS === "web") {
+      const confirm = window.confirm("Are you sure you want to log out?");
+      if (confirm) {
+        onLogout();
+      }
+    } else {
+      Alert.alert(
+        "Logout",
+        "Are you sure you want to log out?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Logout", onPress: onLogout },
+        ],
+        { cancelable: true }
+      );
+    }
   };
 
   return (

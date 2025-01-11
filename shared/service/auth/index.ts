@@ -11,7 +11,7 @@ const postRegister = async (payload: any) => {
     return api.post(`/auth/register`, payload)
 }
 
-const postLogout = async (payload: any, token: string) => {
+const postLogout = async (payload: any, token: string | null) => {
     return api.post(`/auth/logout`, payload, {
         headers: {
             Authorization: `Bearer ${token}`
