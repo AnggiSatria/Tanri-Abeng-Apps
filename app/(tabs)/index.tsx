@@ -24,9 +24,19 @@ import { router } from "expo-router";
 // import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQuery } from "@tanstack/react-query";
-import { getProducts, getTransactions, getUserInfo } from "shared/service";
+import {
+  getProductById,
+  getProducts,
+  getShowsById,
+  getTransactions,
+  getUserInfo,
+} from "shared/service";
 import { User } from "shared/lib";
 import { getItem } from "shared/utils/getStorage";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+
+dayjs.extend(localizedFormat);
 
 interface TripOptionProps {
   pageNavigation: string;
@@ -180,7 +190,7 @@ const DepartureDate: React.FC<DepartureDateProps> = ({
 
 export default function TabTwoScreen() {
   const [token, setToken] = useState<string | null>(null);
-
+  const [combinedData, setCombinedData] = useState<any>([]);
   console.log(token);
 
   useEffect(() => {
@@ -245,6 +255,91 @@ export default function TabTwoScreen() {
   });
 
   const ListTransactions = dataTransactions?.data;
+
+  console.log(combinedData);
+
+  // useEffect(() => {
+  //   const fetchAndCombineData = async () => {
+  //     if (dataTransactions?.data) {
+  //       const results = await Promise.all(
+  //         dataTransactions?.data.map(async (transactions: any) => {
+  //           try {
+  //             const showResponse = await getProductById(
+  //               {},
+  //               token,
+  //               transactions.productId
+  //             );
+
+  //             // Gabungkan data dengan namespace
+  //             return {
+  //               transaction: { ...transactions }, // Data dari produk
+  //               product: { ...showResponse.data }, // Data dari show
+  //             };
+  //           } catch (error) {
+  //             console.error(
+  //               `Error fetching show details for ID: ${transactions.productId}`,
+  //               error
+  //             );
+  //             return {
+  //               transaction: { ...transactions },
+  //               product: null,
+  //             };
+  //           }
+  //         })
+  //       );
+  //       setCombinedData(results);
+  //     }
+  //   };
+
+  //   fetchAndCombineData();
+  // }, [dataTransactions, token]);
+
+  useEffect(() => {
+    const fetchAndCombineData = async () => {
+      if (dataTransactions?.data) {
+        const results = await Promise.all(
+          dataTransactions?.data.map(async (transactions: any) => {
+            try {
+              // Ambil data produk berdasarkan productId
+              const productResponse = await getProductById(
+                {},
+                token,
+                transactions.productId
+              );
+
+              // Ambil showId dari response produk
+              const showId = productResponse?.data?.showId;
+
+              // Ambil data show berdasarkan showId
+              const showResponse = showId
+                ? await getShowsById({}, token, showId)
+                : null;
+
+              // Gabungkan data dengan namespace
+              return {
+                transaction: { ...transactions },
+                product: { ...productResponse.data },
+                show: showResponse ? { ...showResponse.data } : null,
+              };
+            } catch (error) {
+              console.error(
+                `Error fetching details for ID: ${transactions.productId}`,
+                error
+              );
+              return {
+                transaction: { ...transactions },
+                product: null,
+                show: null,
+              };
+            }
+          })
+        );
+        setCombinedData(results);
+      }
+    };
+
+    fetchAndCombineData();
+  }, [dataTransactions, token]);
 
   const handleSearch = async () => {
     const searchQuery = {
@@ -391,16 +486,9 @@ export default function TabTwoScreen() {
               <Text className="text-sm font-semibold text-black">see more</Text>
             </Pressable>
           </View>
-          {/* <FlatList
-        horizontal
-          data={dummyResults}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
-        />  */}
           <FlatList
-            data={ListTransactions}
-            keyExtractor={(item) => item.id}
+            data={combinedData}
+            keyExtractor={(item) => item?.transaction?._id}
             renderItem={({ item }) => (
               <View
                 style={{
@@ -413,23 +501,24 @@ export default function TabTwoScreen() {
               >
                 <View className="flex justify-between">
                   <Text style={{ fontWeight: "bold" }}>
-                    {item.homeTeam} vs {item.awayTeam}
+                    {item?.show?.home} vs {item?.show?.away}
                   </Text>
-                  <Text>{item.seat} </Text>
+                  <Text>{item?.transaction?.qty} </Text>
                   <Text>
-                    {item.matchDate} at {item.matchTime}
+                    {item?.show?.date || "00-00-0000"} at{" "}
+                    {dayjs(item?.show?.times).format("LT") || "00:00"}
                   </Text>
-                  <Text>{item.venue}</Text>
-                  <Text>{item.class}</Text>
+                  <Text>{item?.show?.location}</Text>
+                  <Text>{item?.product?.category}</Text>
 
                   <View
                     style={{
                       backgroundColor:
-                        item.ticketAvailability === "Cancel"
+                        item?.transaction?.status === "Rejected"
                           ? "red"
-                          : item.ticketAvailability === "Pending"
+                          : item?.transaction?.status === "Pending"
                           ? "#ffd32c"
-                          : item.ticketAvailability === "Lunas"
+                          : item?.transaction?.status === "Success"
                           ? "green"
                           : "black", // Default warna jika status tidak ditemukan
                       paddingVertical: 5,
@@ -445,12 +534,12 @@ export default function TabTwoScreen() {
                         fontWeight: "bold",
                       }}
                     >
-                      {item.ticketAvailability}
+                      {item?.transaction?.status}
                     </Text>
                   </View>
 
                   <Text style={{ fontWeight: "bold" }}>
-                    Price: {item.price}
+                    Price: Rp.{item?.product?.price}
                   </Text>
                 </View>
               </View>
