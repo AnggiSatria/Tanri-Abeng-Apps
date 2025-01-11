@@ -45,6 +45,8 @@ export default function RootLayout() {
           <Stack.Screen name="searchResult" options={{ headerShown: false }} />
           <Stack.Screen name="flightdetail" options={{ headerShown: false }} />
           <Stack.Screen name="formuser" options={{ headerShown: false }} />
+          <Stack.Screen name="ticketDetail" options={{ headerShown: false }} />
+          <Stack.Screen name="thankyou" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />

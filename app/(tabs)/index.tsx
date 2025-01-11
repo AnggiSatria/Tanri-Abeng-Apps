@@ -479,10 +479,7 @@ export default function TabTwoScreen() {
             <Text className="text-lg font-semibold text-black">
               Archive Tiket
             </Text>
-            <Pressable
-              className="flex-row justify-center items-center gap-2"
-              onPress={() => {}}
-            >
+            <Pressable className="flex-row justify-center items-center gap-2">
               <Text className="text-sm font-semibold text-black">see more</Text>
             </Pressable>
           </View>
@@ -490,59 +487,65 @@ export default function TabTwoScreen() {
             data={combinedData}
             keyExtractor={(item) => item?.transaction?._id}
             renderItem={({ item }) => (
-              <View
-                style={{
-                  width: "100%", // Menggunakan lebar penuh untuk elemen vertikal
-                  marginVertical: 10, // Memberikan jarak vertikal antar item
-                  padding: 10,
-                  backgroundColor: "#ffffff", // Mengubah warna latar belakang menjadi putih
-                  borderRadius: 8,
+              <Pressable
+                onPress={() => {
+                  router.push("/ticketDetail");
                 }}
               >
-                <View className="flex justify-between">
-                  <Text style={{ fontWeight: "bold" }}>
-                    {item?.show?.home} vs {item?.show?.away}
-                  </Text>
-                  <Text>{item?.transaction?.qty} </Text>
-                  <Text>
-                    {item?.show?.date || "00-00-0000"} at{" "}
-                    {dayjs(item?.show?.times).format("LT") || "00:00"}
-                  </Text>
-                  <Text>{item?.show?.location}</Text>
-                  <Text>{item?.product?.category}</Text>
+                <View
+                  style={{
+                    width: "100%", // Menggunakan lebar penuh untuk elemen vertikal
+                    marginVertical: 10, // Memberikan jarak vertikal antar item
+                    padding: 10,
+                    backgroundColor: "#ffffff", // Mengubah warna latar belakang menjadi putih
+                    borderRadius: 8,
+                  }}
+                >
+                  <View className="flex justify-between">
+                    <Text style={{ fontWeight: "bold" }}>
+                      {item?.show?.home} vs {item?.show?.away}
+                    </Text>
+                    <Text>{item?.transaction?.qty} </Text>
+                    <Text>
+                      {item?.show?.date || "00-00-0000"} at{" "}
+                      {dayjs(item?.show?.times).format("LT") || "00:00"}
+                    </Text>
+                    <Text>{item?.show?.location}</Text>
+                    <Text>{item?.product?.category}</Text>
 
-                  <View
-                    style={{
-                      backgroundColor:
-                        item?.transaction?.status === "Rejected"
-                          ? "red"
-                          : item?.transaction?.status === "Pending"
-                          ? "#ffd32c"
-                          : item?.transaction?.status === "Success"
-                          ? "green"
-                          : "black", // Default warna jika status tidak ditemukan
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      borderRadius: 15, // Membuat bentuk melengkung
-                      alignSelf: "flex-start", // Agar badge berada di sisi kiri
-                      marginTop: 5,
-                    }}
-                  >
-                    <Text
+                    <View
                       style={{
-                        color: "#f5f5f5",
-                        fontWeight: "bold",
+                        backgroundColor:
+                          item?.transaction?.status === "Rejected"
+                            ? "red"
+                            : item?.transaction?.status === "Pending"
+                            ? "#ffd32c"
+                            : item?.transaction?.status === "Success"
+                            ? "green"
+                            : "black", // Default warna jika status tidak ditemukan
+                        paddingVertical: 5,
+                        paddingHorizontal: 10,
+                        borderRadius: 15, // Membuat bentuk melengkung
+                        alignSelf: "flex-start", // Agar badge berada di sisi kiri
+                        marginTop: 5,
                       }}
                     >
-                      {item?.transaction?.status}
+                      <Text
+                        style={{
+                          color: "#f5f5f5",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {item?.transaction?.status}
+                      </Text>
+                    </View>
+
+                    <Text style={{ fontWeight: "bold" }}>
+                      Price: Rp.{item?.product?.price}
                     </Text>
                   </View>
-
-                  <Text style={{ fontWeight: "bold" }}>
-                    Price: Rp.{item?.product?.price}
-                  </Text>
                 </View>
-              </View>
+              </Pressable>
             )}
             contentContainerStyle={{ paddingBottom: 20 }}
           />
