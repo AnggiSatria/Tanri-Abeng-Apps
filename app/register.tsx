@@ -119,7 +119,7 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: "black", flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
       <Toast />
       <StatusBar style="light" />
 
@@ -128,7 +128,9 @@ export default function RegisterScreen() {
         entering={FadeInDown.duration(400).springify()}
         style={{ alignItems: "center", marginTop: 12 }}
       >
-        <Text className="mt-5" style={styles.title}>Create Account</Text>
+        <Text className="mt-5" style={styles.title}>
+          Buat Akun
+        </Text>
       </Animated.View>
 
       {/* Form */}
@@ -142,35 +144,35 @@ export default function RegisterScreen() {
             control={control}
             name="firstName"
             rules={{ required: "First Name is required" }}
-            placeholder="Enter your First Name"
+            placeholder="Masukan Nama Depan"
           />
 
           <OrganismControlledInput
             control={control}
             name="lastName"
             rules={{ required: "Last Name is required" }}
-            placeholder="Enter your Last Name"
+            placeholder="Masukan Nama Belakang"
           />
 
           <OrganismControlledInput
             control={control}
             name="email"
             rules={{ required: "Email is required" }}
-            placeholder="Enter your email"
+            placeholder="Masukan email"
           />
 
           <PasswordFieldOrganism
             control={control}
             rules={{ required: "Password is required" }}
             name="password"
-            placeholder="Enter your password"
+            placeholder="Masukan Kata Sandi"
           />
 
           <PhoneNumberInputOrganism
             control={control}
             rules={{ required: "Phone Number is required" }}
             name="phoneNumber"
-            placeholder="Enter your phone number"
+            placeholder="Masukkan no telfon"
             onChangePhoneNumber={(params) => setValue(`phoneUser`, params)}
             onChangeSelectedCountry={(params) =>
               setValue(`countryCode`, params)
@@ -209,7 +211,7 @@ export default function RegisterScreen() {
             onPress={handleSubmit(onSubmit)}
             style={styles.registerButton}
           >
-            <Text style={styles.registerText}>Register</Text>
+            <Text style={styles.registerText}>Daftar</Text>
           </Pressable>
         </Animated.View>
 
@@ -218,9 +220,9 @@ export default function RegisterScreen() {
           entering={FadeInUp.duration(600).delay(900).springify()}
           style={{ flexDirection: "row", marginTop: 16 }}
         >
-          <Text style={styles.footerText}>Already have an account?</Text>
+          <Text style={styles.footerText}>Sudah punya akun?</Text>
           <Text onPress={() => router.push("/login")} style={styles.loginLink}>
-            Login
+            Masuk
           </Text>
         </Animated.View>
       </View>
@@ -230,7 +232,7 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
   title: {
-    color: "#F1F1F1",
+    color: "#0a0a0a",
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
@@ -257,23 +259,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   registerButton: {
-    backgroundColor: "#FFC90D",
-    borderRadius: 50,
+    backgroundColor: "#2525cb",
+    borderRadius: 6,
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 16,
   },
   registerText: {
-    color: "#000000",
+    color: "white",
     fontSize: 18,
     fontWeight: "bold",
   },
   footerText: {
-    color: "#F1F1F1",
+    color: "#0a0a0a",
     fontSize: 14,
   },
   loginLink: {
-    color: "#FFC90D",
+    color: "#1919e7",
     fontSize: 14,
     fontWeight: "bold",
     paddingLeft: 4,

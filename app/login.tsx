@@ -77,7 +77,7 @@ export default function LoginScreen() {
     <SafeAreaView
       className="flex-1"
       style={{
-        backgroundColor: "black",
+        backgroundColor: "white",
       }}
     >
       <Toast />
@@ -87,25 +87,19 @@ export default function LoginScreen() {
       <Animated.View
         entering={FadeInDown.duration(200).springify()}
         className="flex-row justify-center items-center mt-10 pb-5"
-      >
-        {/* <MaterialCommunityIcons name="ticket" size={24} color="#12B3A8" />
-        <Text className="text-[#FFFFFF] text-xl font-light leading-[60px] pl-1"></Text>
-        <Text className="text-[#12B3A8] text-xl leading-[60px] pl-1 italic">
-          Ticket ID
-        </Text> */}
-      </Animated.View>
+      ></Animated.View>
       <View className="flex-1 items-center px-6 mt-6">
         {/* Judul Halaman */}
         <Animated.View entering={FadeInRight.duration(600).springify()}>
-          <Text className="text-[#FFFFFF] text-2xl font-bold text-center mb-4">
-            Welcome Back!
+          <Text className="text-[#0a0a0a] text-2xl font-bold text-center mb-4">
+            Selamat Datang!
           </Text>
         </Animated.View>
         <Animated.View
           entering={FadeInDown.duration(600).delay(200).springify()}
         >
-          <Text className="text-neutral-300 text-sm text-center mb-8">
-            Login to your account to discover amazing flights and deals.
+          <Text className="text-[#0a0a0a] text-sm text-center mb-8">
+            Silahkan login atau daftar jika belum mempunyai akun
           </Text>
         </Animated.View>
 
@@ -149,14 +143,8 @@ export default function LoginScreen() {
           entering={FadeInDown.duration(600).delay(500).springify()}
           className="w-full mt-8"
         >
-          {/* <Pressable
-            onPress={() => router.push("/(tabs)")}
-            className="bg-[#12B3A8] rounded-full justify-center items-center py-4"
-          >
-            <Text className="text-white text-lg font-bold">Login</Text>
-          </Pressable> */}
           <OrganismButton
-            title="Submit"
+            title="Kirim"
             onPress={handleSubmit(onSubmit)}
             loading={false}
             style={{
@@ -172,11 +160,11 @@ export default function LoginScreen() {
           className="flex-row mt-6 w-full justify-center"
         >
           <Text className="text-neutral-300 font-medium text-sm leading-[38px]">
-            Don't have an account?
+            Belum Punya Akun?
           </Text>
           <Pressable onPress={() => router.push("/register")}>
-            <Text className="text-[#FFC90D] font-bold text-sm leading-[38px] pl-2">
-              Register
+            <Text className="hover:text-[#1919e7] text-[#2525cb] font-bold text-sm leading-[38px] pl-2">
+              Daftar
             </Text>
           </Pressable>
         </Animated.View>
@@ -194,9 +182,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: "100%",
+    backgroundColor: "#2525cb",
   },
   buttonText: {
     fontSize: 18,
-    color: "black",
+    color: "white",
   },
 });

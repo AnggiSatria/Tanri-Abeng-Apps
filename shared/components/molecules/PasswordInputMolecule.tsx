@@ -56,15 +56,16 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    // borderWidth: 1,
-    // borderColor: "#ccc",
+    borderWidth: 1,
+    borderColor: "#0a0a0a",
     borderRadius: 8,
     paddingHorizontal: 5,
-    backgroundColor: "#fff",
+    backgroundColor: "",
   },
   textInput: {
     flex: 1,
     height: 40,
+    borderWidth: 0,
   },
   iconContainer: {
     marginLeft: 10,
