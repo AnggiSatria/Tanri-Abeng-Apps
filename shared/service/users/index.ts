@@ -2,12 +2,15 @@ import { removeEmptyAttributes } from "shared/utils";
 import QueryString from "qs";
 import api from "../api";
 
-const getUsers = async (activeFilter: any) => {
+const getUsers = async (activeFilter: any, token: string | any) => {
   const queryString = QueryString.parse(
     removeEmptyAttributes(activeFilter || "")
   );
   return api.get(`/Users`, {
     params: { ...queryString },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 

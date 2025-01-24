@@ -8,8 +8,6 @@ const App: React.FC = () => {
   const [role, setRole] = useState<"student" | "teacher" | any>("student"); // 'student' or 'teacher'
   const [token, setToken] = useState<any>("");
 
-  console.log(role);
-
   useEffect(() => {
     const fetchToken = async () => {
       const authToken = await AsyncStorage.getItem("userToken");

@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -16,14 +17,18 @@ interface TeacherClass {
   userId: string;
 }
 
-const HomeTeacher: React.FC = (token: any) => {
+interface HomeTeacherProps {
+  token: string | any; // Sesuaikan tipe token
+}
+
+const HomeTeacher: React.FC<HomeTeacherProps> = ({ token }) => {
   const [className, setClassName] = useState<string>("");
   const [schedule, setSchedule] = useState<string>("Monday");
 
   const { data: dataUser } = useQuery({
     queryKey: ["user"],
-    queryFn: async () => await getUserInfo({}, token?.token),
-    enabled: !!token?.token,
+    queryFn: async () => await getUserInfo({}, token),
+    enabled: !!token,
   });
 
   const User = dataUser && dataUser?.data;
@@ -35,25 +40,20 @@ const HomeTeacher: React.FC = (token: any) => {
         {
           userId: User?._id,
         },
-        token?.token
+        token
       ),
-    enabled: !!token.token && !!User,
+    enabled: !!token && !!User,
   });
 
   const classByUserId = dataClassByUserId && dataClassByUserId?.data;
 
-  console.log(classByUserId);
-
   const mutationCreateClass = useMutation({
-    mutationFn: async (payload: any) => postClass(payload, token?.token),
+    mutationFn: async (payload: any) => postClass(payload, token),
     mutationKey: ["create-class"],
   });
 
   const createClass = async () => {
     if (className.trim() === "") return;
-    console.log(
-      `Kelas baru "${className}" dengan jadwal "${schedule}" telah dibuat.`
-    );
 
     const response = await mutationCreateClass.mutateAsync({
       name: className,
@@ -77,11 +77,16 @@ const HomeTeacher: React.FC = (token: any) => {
         data={classByUserId}
         keyExtractor={(item) => item?._id}
         renderItem={({ item }) => (
-          <View className="bg-white p-4 rounded-lg shadow mt-2">
+          <TouchableOpacity
+            onPress={() =>
+              router.push(`/(tabs)/TeacherClassPage?classId=${item?._id}`)
+            }
+            className="bg-white p-4 rounded-lg shadow mt-2"
+          >
             <Text className="text-lg font-semibold">{item?.name}</Text>
             <Text className="text-gray-600">Jadwal: {item?.schedule}</Text>
             {/* <Text className="text-gray-600">{item.students} mahasiswa</Text> */}
-          </View>
+          </TouchableOpacity>
         )}
       />
 
@@ -96,19 +101,19 @@ const HomeTeacher: React.FC = (token: any) => {
         onChangeText={setClassName}
       />
       <Text className="text-gray-700 mt-4">Pilih Hari</Text>
-      <View className="bg-white rounded-lg shadow mt-2">
+      <View className="bg-white rounded-lg shadow mt-2 border border-black">
         <Picker
           selectedValue={schedule}
           onValueChange={(itemValue: any) => setSchedule(itemValue)}
           className="p-2"
         >
-          <Picker.Item label="Monday" value="Monday" />
-          <Picker.Item label="Tuesday" value="Tuesday" />
-          <Picker.Item label="Wednesday" value="Wednesday" />
-          <Picker.Item label="Thursday" value="Thursday" />
-          <Picker.Item label="Friday" value="Friday" />
-          <Picker.Item label="Saturday" value="Saturday" />
-          <Picker.Item label="Sunday" value="Sunday" />
+          <Picker.Item label="Senin" value="Senin" />
+          <Picker.Item label="Selasa" value="Selasa" />
+          <Picker.Item label="Rabu" value="Rabu" />
+          <Picker.Item label="Kamis" value="Kamis" />
+          <Picker.Item label="Jumat" value="Jumat" />
+          <Picker.Item label="Sabtu" value="Sabtu" />
+          <Picker.Item label="Minggu" value="Minggu" />
         </Picker>
       </View>
       <TouchableOpacity
