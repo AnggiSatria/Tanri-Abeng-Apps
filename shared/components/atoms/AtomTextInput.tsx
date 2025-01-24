@@ -14,8 +14,6 @@ const AtomTextInput: React.FC<AtomTextInputProps> = ({
   style,
   ...props
 }) => {
-  console.log(`Test`, disabled);
-
   return (
     <TextInput
       value={values || ""}

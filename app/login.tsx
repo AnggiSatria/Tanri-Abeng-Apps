@@ -51,6 +51,11 @@ export default function LoginScreen() {
         if (res.status === 200) {
           const setToken = async () => {
             await AsyncStorage.setItem("userToken", res.data.token);
+            if (res?.data?.user?.nim !== "") {
+              await AsyncStorage.setItem("status", "student");
+            } else if (res?.data?.user?.nip !== "") {
+              await AsyncStorage.setItem("status", "teacher");
+            }
           };
           setToken();
           router.push(`/(tabs)`);

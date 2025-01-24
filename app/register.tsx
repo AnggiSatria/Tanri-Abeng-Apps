@@ -48,12 +48,14 @@ export default function RegisterScreen() {
   });
 
   const teacherMutation = useMutation({
-    mutationFn: async (payload: any) => postTeachers(payload),
+    mutationFn: async ({ payload, token }: { payload: any; token: any }) =>
+      postTeachers(payload, token),
     mutationKey: ["create-teacher"],
   });
 
   const studentMutation = useMutation({
-    mutationFn: async (payload: any) => postStudents(payload),
+    mutationFn: async ({ payload, token }: { payload: any; token: any }) =>
+      postStudents(payload, token),
     mutationKey: ["create-students"],
   });
 
@@ -66,9 +68,9 @@ export default function RegisterScreen() {
         countryCode: data?.countryCode?.callingCode,
       };
 
-      console.log(payload);
+      console.log(payload.nip === undefined && payload.nim === undefined);
 
-      if (payload.nip === null && payload.nim === null) {
+      if (payload.nip === undefined && payload.nim === undefined) {
         return "";
       } else {
         const response = await mutation.mutateAsync(payload);
@@ -81,23 +83,34 @@ export default function RegisterScreen() {
         console.log(response);
 
         if (response.status === 200) {
-          if (response.data.nim === null && response.data.nip !== null) {
+          if (isChecked) {
+            console.log(`Teacher`);
+
             const res = await teacherMutation.mutateAsync({
-              userId: response.data._id,
-              classId: "",
+              payload: {
+                userId: response?.data?.userId,
+                classId: "",
+              },
+              token: response?.data?.token,
             });
-            if (res.status === 200) {
-              await AsyncStorage.setItem("userToken", response.data.token);
+            if (res.status === 200 || res.status === 201) {
+              await AsyncStorage.setItem("userToken", response?.data?.token);
+              await AsyncStorage.setItem("status", "teacher");
               router.push(`/(tabs)`);
             }
           } else {
+            console.log(`Students`);
             const res = await studentMutation.mutateAsync({
-              userId: response.data._id,
-              status: "active",
-              classId: "",
+              payload: {
+                userId: response?.data?.userId,
+                status: "active",
+                classId: "",
+              },
+              token: response?.data?.token,
             });
-            if (res.status === 200) {
-              await AsyncStorage.setItem("userToken", response.data.token);
+            if (res.status === 200 || res.status === 201) {
+              await AsyncStorage.setItem("userToken", response?.data?.token);
+              await AsyncStorage.setItem("status", "student");
               router.push(`/(tabs)`);
             }
           }

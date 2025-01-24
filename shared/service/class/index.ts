@@ -2,8 +2,12 @@ import { removeEmptyAttributes } from "shared/utils";
 import api from "../api";
 import QueryString from "qs";
 
-const postClass = async (payload: any) => {
-  return api.post(`/Class`, payload);
+const postClass = async (payload: any, token: string | any) => {
+  return api.post(`/Class`, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 const getClass = async (activeFilter: any, token: string | null) => {

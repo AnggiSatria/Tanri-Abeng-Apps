@@ -2,8 +2,10 @@ import { removeEmptyAttributes } from "shared/utils";
 import api from "../api";
 import QueryString from "qs";
 
-const postTeachers = async (payload: any) => {
-  return api.post(`/Teachers`, payload);
+const postTeachers = async (payload: any, token: string | any) => {
+  return api.post(`/Teachers`, payload, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 };
 
 const getTeachers = async (activeFilter: any, token: string | null) => {
