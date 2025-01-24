@@ -108,24 +108,11 @@ export default function LoginScreen() {
           entering={FadeInUp.duration(600).delay(300).springify()}
           className="w-full gap-5 space-y-4"
         >
-          {/* <TextInput
-          <TextInput
-            placeholder="Email"
-            placeholderTextColor="#a5b4fc"
-            className="bg-neutral-800 text-white p-4 rounded-lg w-full"
-          />
-          <TextInput
-            placeholder="Password"
-            placeholderTextColor="#a5b4fc"
-            secureTextEntry
-            className="bg-neutral-800 text-white p-4 rounded-lg w-full"
-          /> */}
-
           <OrganismControlledInput
             control={control}
             name="email"
             rules={{ required: "Email is required" }}
-            placeholder="Enter your email"
+            placeholder="Masukan Email"
             customStyles={{}}
           />
 
@@ -133,7 +120,7 @@ export default function LoginScreen() {
             control={control}
             name="password"
             rules={{ required: "Password is required" }}
-            placeholder="Enter your password"
+            placeholder="Masukkan Kata Sandi"
             // customStyles={{}}
           />
         </Animated.View>

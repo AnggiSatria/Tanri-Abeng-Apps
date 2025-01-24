@@ -65,6 +65,7 @@ const PhoneNumberInputOrganism: React.FC<PhoneNumberInputOrganismProps> = ({
       defaultValue={defaultValue}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <PhoneInput
+          className="!text-[#0a0a0a]"
           keyboardType="numeric"
           defaultCountry={defaultCountry}
           value={value}

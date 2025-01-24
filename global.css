@@ -2,3 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.r-color-jwli3a {
+  color: "#0a0a0a" !important;
+}

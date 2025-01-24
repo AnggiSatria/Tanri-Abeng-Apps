@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -14,7 +15,7 @@ import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { postRegister } from "shared/service";
+import { postRegister, postStudents, postTeachers } from "shared/service";
 import Toast from "react-native-toast-message";
 import OrganismControlledInput from "shared/components/organisms/ControlledInput";
 import PasswordFieldOrganism from "shared/components/organisms/PasswordFieldOrganism";
@@ -34,50 +35,27 @@ type FormData = {
 };
 
 export default function RegisterScreen() {
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const { control, handleSubmit, setValue } = useForm<FormData>();
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  const toggleCheckbox = () => {
+    setIsChecked(!isChecked);
+  };
 
   const mutation = useMutation({
     mutationFn: async (payload: any) => postRegister(payload),
     mutationKey: ["register"],
   });
 
-  const handleImagePick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
-      allowsEditing: true,
-      quality: 1,
-    });
+  const teacherMutation = useMutation({
+    mutationFn: async (payload: any) => postTeachers(payload),
+    mutationKey: ["create-teacher"],
+  });
 
-    if (!result.canceled) {
-      setSelectedImages(result.assets.map((asset) => asset.uri)); // Collect multiple URIs
-    }
-  };
-
-  //  const handleImagePick = async () => {
-  //    const result = await ImagePicker.launchImageLibraryAsync({
-  //      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //      allowsEditing: true,
-  //      aspect: [1, 1],
-  //      quality: 1,
-  //    });
-
-  //    if (!result.canceled) {
-  //      const uri = result.assets[0].uri;
-
-  //      try {
-  //        // Convert the image URI to a blob
-  //        const response = await fetch(uri);
-  //        const blob = await response.blob();
-
-  //        console.log("Blob created:", blob); // You can now use the blob (e.g., upload to a server)
-  //        setSelectedImage(uri); // Still display the image preview using the URI
-  //      } catch (error) {
-  //        console.error("Error converting image to blob:", error);
-  //      }
-  //    }
-  //  };
+  const studentMutation = useMutation({
+    mutationFn: async (payload: any) => postStudents(payload),
+    mutationKey: ["create-students"],
+  });
 
   const onSubmit: SubmitHandler<FormData> = async (data: any) => {
     try {
@@ -86,28 +64,44 @@ export default function RegisterScreen() {
         fullName: `${data?.firstName} ${data?.lastName}`,
         phoneNumber: `${data?.countryCode?.callingCode}${data?.phoneUser}`,
         countryCode: data?.countryCode?.callingCode,
-        url: [
-          {
-            fileName: "image.png",
-            url: selectedImages.toString(),
-          },
-        ],
       };
 
       console.log(payload);
 
-      const response = await mutation.mutateAsync(payload);
-      Toast.show({
-        type: "success",
-        text1: "Register Success",
-        text2: "Your account has been successfully registered.",
-      });
+      if (payload.nip === null && payload.nim === null) {
+        return "";
+      } else {
+        const response = await mutation.mutateAsync(payload);
+        Toast.show({
+          type: "success",
+          text1: "Register Success",
+          text2: "Your account has been successfully registered.",
+        });
 
-      console.log(response);
+        console.log(response);
 
-      if (response.status === 200) {
-        await AsyncStorage.setItem("userToken", response.data.token);
-        router.push(`/(tabs)`);
+        if (response.status === 200) {
+          if (response.data.nim === null && response.data.nip !== null) {
+            const res = await teacherMutation.mutateAsync({
+              userId: response.data._id,
+              classId: "",
+            });
+            if (res.status === 200) {
+              await AsyncStorage.setItem("userToken", response.data.token);
+              router.push(`/(tabs)`);
+            }
+          } else {
+            const res = await studentMutation.mutateAsync({
+              userId: response.data._id,
+              status: "active",
+              classId: "",
+            });
+            if (res.status === 200) {
+              await AsyncStorage.setItem("userToken", response.data.token);
+              router.push(`/(tabs)`);
+            }
+          }
+        }
       }
     } catch (err: any) {
       Toast.show({
@@ -143,34 +137,64 @@ export default function RegisterScreen() {
           <OrganismControlledInput
             control={control}
             name="firstName"
-            rules={{ required: "First Name is required" }}
+            rules={{ required: "Nama Depan Wajib Di Isi" }}
             placeholder="Masukan Nama Depan"
           />
 
           <OrganismControlledInput
             control={control}
             name="lastName"
-            rules={{ required: "Last Name is required" }}
+            rules={{ required: "Nama Belakang Wajib Di Isi" }}
             placeholder="Masukan Nama Belakang"
           />
 
           <OrganismControlledInput
             control={control}
             name="email"
-            rules={{ required: "Email is required" }}
+            rules={{ required: "Email Wajib Di Isi" }}
             placeholder="Masukan email"
           />
 
           <PasswordFieldOrganism
             control={control}
-            rules={{ required: "Password is required" }}
+            rules={{ required: "Kata Sandi Wajib Di Isi" }}
             name="password"
             placeholder="Masukan Kata Sandi"
           />
 
+          <View className="flex-row items-center space-x-2">
+            <TouchableOpacity
+              onPress={toggleCheckbox}
+              className={`w-6 h-6 rounded border-2 ${
+                isChecked ? "bg-blue-500 border-blue-500" : "border-gray-400"
+              } justify-center items-center`}
+            >
+              {isChecked && <View className="w-3 h-3 bg-white rounded" />}
+            </TouchableOpacity>
+            <Text className="text-base text-gray-800">
+              Centang ini jika anda dosen
+            </Text>
+          </View>
+
+          {isChecked ? (
+            <OrganismControlledInput
+              control={control}
+              name="nip"
+              rules={{ required: "NIP Wajib Di Isi" }}
+              placeholder="Masukan NIP"
+            />
+          ) : (
+            <OrganismControlledInput
+              control={control}
+              name="nim"
+              rules={{ required: "NIM Wajib Di Isi" }}
+              placeholder="Masukan NIM"
+            />
+          )}
+
           <PhoneNumberInputOrganism
             control={control}
-            rules={{ required: "Phone Number is required" }}
+            rules={{ required: "No Telfon Wajib Di Isi" }}
             name="phoneNumber"
             placeholder="Masukkan no telfon"
             onChangePhoneNumber={(params) => setValue(`phoneUser`, params)}
@@ -180,7 +204,7 @@ export default function RegisterScreen() {
           />
         </Animated.View>
 
-        {/* Upload Gambar */}
+        {/* Upload Gambar
         <Animated.View
           entering={FadeInDown.duration(600).delay(500).springify()}
           style={{ width: "100%", marginTop: 16 }}
@@ -200,7 +224,7 @@ export default function RegisterScreen() {
               <Text style={styles.uploadText}>Upload Images</Text>
             )}
           </Pressable>
-        </Animated.View>
+        </Animated.View> */}
 
         {/* Tombol Register */}
         <Animated.View

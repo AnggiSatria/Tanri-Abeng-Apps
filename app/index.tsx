@@ -41,12 +41,8 @@ export default function HomeScreen() {
         <View className="w-full h-full px-4 items-center flex flex-col justify-between">
           <Animated.View
             entering={FadeInDown.duration(200).delay(200).springify()}
-            className="mt-10"
-          >
-            <Text className="text-[32px] font-semibold leading-[40px] text-center text-[#0a0a0a] ">
-              TAU APPS
-            </Text>
-          </Animated.View>
+            className="mt-5"
+          ></Animated.View>
           <Animated.View
             entering={FadeInDown.duration(200).delay(600).springify()}
             className="h-1/4 w-full justify-start pt-4 px-10"
